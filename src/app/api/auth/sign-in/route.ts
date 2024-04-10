@@ -2,6 +2,9 @@ import { auth } from "@/core/auth/firebase";
 import { adminAuth } from "@/core/auth/firebase-admin";
 import { cookies } from "next/headers";
 
+/**
+ * @deprecated - next-firebase-auth-edge already provides  a default route to handle cookie creation
+ */
 export async function POST(request: Request) {
   const { idToken } = (await request.json()) as {
     idToken: string;
