@@ -1,5 +1,5 @@
 import { FirebaseOptions, getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, inMemoryPersistence, setPersistence } from "firebase/auth";
 import { clientConfig } from "../../../config/client-config";
 export const firebaseConfig: FirebaseOptions = {
   ...clientConfig.firebase,
@@ -7,6 +7,7 @@ export const firebaseConfig: FirebaseOptions = {
 export const firebaseApp =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 export const auth = getAuth(firebaseApp);
+setPersistence(auth, inMemoryPersistence);
 
 export async function getAppRouterSession() {
   // dynamically import to prevent import errors in pages router
