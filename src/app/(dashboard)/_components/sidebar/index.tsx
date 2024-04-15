@@ -1,5 +1,5 @@
 import React from "react";
-import NewTeam from "./newTeam";
+import NewTeam from "./new-team-button";
 import { List } from "./list";
 
 export const Sidebar = () => {

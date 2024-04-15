@@ -11,6 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import SearchInput from "./search-input";
+import { TeamDropdown } from "./team-dropdown";
+import InviteMember from "./invite-member-button";
 
 const UserImage = () => {
   return (
@@ -64,19 +67,14 @@ const UserDropdown = () => {
 
 export const Navbar = () => {
   return (
-    <div className="flex align-center gap-x-4 p-5">
-      <div className="group hidden lg:flex lg:w-96 bg-background items-center pl-8 gap-x-3 rounded-sm border border-gray-300 ">
-        <Search className="group-hover:text-blue-500 transition duration-300" />
-        <Input
-          placeholder="Search boards"
-          className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
-        />
+    <div className="flex align-center gap-4 p-5 flex-wrap ">
+      <div className="hidden lg:flex lg:flex-1">
+        <SearchInput />
       </div>
-      <div className="flex-1"></div>
-      <div className="flex w-48 bg-background items-center gap-x-3 rounded-sm border border-blue-500 justify-center hover:bg-gray-50 transition duration-300">
-        <Plus className="text-blue-500" />
-        <span className="text-blue-500">Invite Members</span>
+      <div className="flex-1 lg:hidden">
+        <TeamDropdown />
       </div>
+      <InviteMember />
       <UserDropdown />
     </div>
   );
