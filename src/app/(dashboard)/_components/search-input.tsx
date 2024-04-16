@@ -18,7 +18,7 @@ const SearchInput = () => {
   useEffect(() => {
     const qs = queryString.stringify(
       {
-        search: debouncedValue,
+        searchTerm: debouncedValue,
       },
       { skipEmptyString: true, skipNull: true }
     );

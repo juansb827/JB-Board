@@ -11,16 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-const NewTeam = () => {
+const NewTeam = ({ children }: { children: React.ReactNode }) => {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <div className="aspect-square w-full">
-          <div className="bg-white/25 h-full w-full rounded-md flex justify-center items-center opacity-60 hover:opacity-100 transition">
-            <Plus className="text-white" />
-          </div>
-        </div>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create new team</DialogTitle>

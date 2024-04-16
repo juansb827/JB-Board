@@ -67,7 +67,7 @@ const UserDropdown = () => {
 
 export const Navbar = () => {
   return (
-    <div className="flex align-center gap-4 p-5 flex-wrap ">
+    <div className="flex align-center gap-4 flex-wrap ">
       <div className="hidden lg:flex lg:flex-1">
         <SearchInput />
       </div>

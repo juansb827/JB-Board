@@ -9,9 +9,9 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className="pl-16 h-full flex gap-x-3">
         <OrgSidebar />
-        <div className="h-full flex-1">
+        <div className="h-full flex-1 flex flex-col px-5 pt-5 gap-y-5">
           <Navbar />
-          {children}
+          <div className="flex-1">{children}</div>
         </div>
         {/* <div className="flex gap-x-3 h-full">
         </div> */}
