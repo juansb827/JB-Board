@@ -22,6 +22,7 @@ export default async function DashboardPage({
       ) : (
         <BoardList
           teamId="123"
+          teamName="Team 1 Test"
           searchParams={{ favorites: favorites === "true", searchTerm }}
         />
       )}
