@@ -4,7 +4,7 @@ export namespace FeaturesModule {
   interface DefinedFields {
     Team: 'id' | 'name' | 'extra';
     Query: 'team' | 'user';
-    User: 'id' | 'name';
+    User: 'id' | 'name' | 'teams';
   };
   
   export type Team = Pick<Types.Team, DefinedFields['Team']>;
