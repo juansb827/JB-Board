@@ -1,11 +1,14 @@
 {
   "name": "server",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register ./temp.ts",
-    "dev": "nodemon --exec ts-node -r tsconfig-paths/register ./temp.ts",
+    "build": "tsc",
+    "dev": "tsx watch ./src/index",
+    "dev2": "tsx watch ./temp.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -27,6 +30,7 @@
     "prisma-kysely": "^1.8.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.2",
     "typescript": "^5.4.5"
   }
 }
