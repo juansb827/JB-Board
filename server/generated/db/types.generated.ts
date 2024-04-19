@@ -26,6 +26,12 @@ export type Profile = {
     bio: string | null;
     userId: number;
 };
+export type Team = {
+    id: Generated<number>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Timestamp;
+    deletedAt: Timestamp | null;
+};
 export type User = {
     id: Generated<number>;
     email: string;
@@ -35,5 +41,6 @@ export type DB = {
     Comment: Comment;
     Post: Post;
     Profile: Profile;
+    Team: Team;
     User: User;
 };
