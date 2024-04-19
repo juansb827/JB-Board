@@ -1,0 +1,9 @@
+type Team {
+  id: ID!
+  name: String
+  extra: [String]
+}
+
+type Query {
+  team(id: ID!): Team
+}

@@ -9,13 +9,17 @@
     "build": "tsc",
     "dev": "tsx watch ./src/index",
     "dev2": "tsx watch ./temp.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "prisma generate",
+    "graphql:generate": "graphql-codegen"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.10.4",
+    "@graphql-codegen/graphql-modules-preset": "^4.0.6",
+    "@graphql-tools/load-files": "^7.0.0",
     "@prisma/client": "5.12.1",
     "dotenv": "^16.4.5",
     "graphql": "^16.8.1",
@@ -23,6 +27,9 @@
     "pg": "^8.11.5"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.6",
+    "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@types/node": "^20.12.7",
     "@types/pg": "^8.11.5",
     "nodemon": "^3.1.0",
