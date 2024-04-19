@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node -r tsconfig-paths/register ./temp.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register ./temp.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,12 +13,18 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "5.12.1",
-    "kysely": "^0.27.3"
+    "dotenv": "^16.4.5",
+    "kysely": "^0.27.3",
+    "pg": "^8.11.5"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "@types/pg": "^8.11.5",
+    "nodemon": "^3.1.0",
     "prisma": "^5.12.1",
+    "prisma-kysely": "^1.8.0",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   }
 }

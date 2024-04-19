@@ -5,7 +5,17 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  // provider = "prisma-client-js"
+  // We ll be using prisma for migrations but not as an ORM
+  // so we ll generate kysely types instead of prismaClient's
+  provider = "prisma-kysely"
+
+  // Optionally provide a destination directory for the generated file
+  // and a filename of your choice
+  output = "../generated/db"
+  fileName = "types.ts"
+  // Optionally generate runtime enums to a separate file
+  enumFileName = "enums.ts"
 }
 
 datasource db {
@@ -14,6 +24,15 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int   
+}
 model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -23,6 +42,7 @@ model Post {
   published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
+  comments Comment[]
 }
 
 model Profile {
