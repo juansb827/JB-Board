@@ -1,4 +1,5 @@
 import { FeaturesModule } from "../generated-types/module-types";
+import { TeamService } from "./team.service";
 
 const Query: FeaturesModule.QueryResolvers = {
   team: async (root) => {
@@ -11,12 +12,7 @@ const Query: FeaturesModule.QueryResolvers = {
 
 const Mutation: FeaturesModule.MutationResolvers = {
   createTeam: async (root, args, context, info) => {
-    return {
-      team: {
-        id: "1",
-        name: args.input.name,
-      },
-    };
+    return TeamService.create(args.input);
   },
 };
 

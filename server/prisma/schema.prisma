@@ -65,5 +65,6 @@ model Team {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime? 
+  name    String @unique
 }
 

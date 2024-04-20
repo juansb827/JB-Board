@@ -31,6 +31,7 @@ export type Team = {
     createdAt: Generated<Timestamp>;
     updatedAt: Timestamp;
     deletedAt: Timestamp | null;
+    name: string;
 };
 export type User = {
     id: Generated<number>;
