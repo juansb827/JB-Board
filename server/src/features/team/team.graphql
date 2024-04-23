@@ -4,8 +4,12 @@ type Team {
   extra: [String]
 }
 
+type PaginatedTeam {
+  nodes: [Team!]!
+}
 type Query {
   team(id: ID!): Team
+  teams: PaginatedTeam
 }
 
 input CreateTeamInput {

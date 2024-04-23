@@ -33,6 +33,11 @@ export type Team = {
     deletedAt: Timestamp | null;
     name: string;
 };
+export type TeamUser = {
+    userId: number;
+    teamId: number;
+    createdAt: Generated<Timestamp>;
+};
 export type User = {
     id: Generated<number>;
     email: string;
@@ -43,5 +48,6 @@ export type DB = {
     Post: Post;
     Profile: Profile;
     Team: Team;
+    TeamUser: TeamUser;
     User: User;
 };

@@ -11,7 +11,7 @@
     "dev": "concurrently \"npm run start:watch\" \"npm run graphql:generate:watch\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma:models:generate": "prisma generate",
-    "prisma:migration:generate": "prisma migrate dev --create-only --name team",
+    "prisma:migration:generate": "prisma migrate dev --create-only --name",
     "prisma:migration:run": "prisma migrate dev",
     "graphql:generate": "graphql-codegen",
     "graphql:generate:watch": "graphql-codegen --watch src/**/*.graphql"

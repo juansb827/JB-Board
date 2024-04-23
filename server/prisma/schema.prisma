@@ -12,15 +12,15 @@ generator client {
 
   // Optionally provide a destination directory for the generated file
   // and a filename of your choice
-  output = "../generated/db"
-  fileName = "types.generated.ts"
+  output       = "../generated/db"
+  fileName     = "types.generated.ts"
   // Optionally generate runtime enums to a separate file
   enumFileName = "enums.ts"
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -31,18 +31,19 @@ model Comment {
   title     String   @db.VarChar(255)
   content   String?
   post      Post     @relation(fields: [postId], references: [id])
-  postId    Int   
+  postId    Int
 }
+
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  title     String    @db.VarChar(255)
   content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
+  published Boolean   @default(false)
+  author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
-  comments Comment[]
+  comments  Comment[]
 }
 
 model Profile {
@@ -53,18 +54,28 @@ model Profile {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  name     String?
+  posts    Post[]
+  profile  Profile?
+  teams    TeamUser[]
 }
 
 model Team {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime? 
-  name    String @unique
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  name      String     @unique
+  users  TeamUser[]
 }
 
+model TeamUser {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  team   Team @relation(fields: [teamId], references: [id])
+  teamId Int
+  createdAt DateTime   @default(now())
+  @@id([teamId, userId])
+}

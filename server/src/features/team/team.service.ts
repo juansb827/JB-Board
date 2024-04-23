@@ -6,8 +6,11 @@ export class TeamService {
     input: FeaturesModule.CreateTeamInput
   ): Promise<FeaturesModule.CreateTeamResponse> {
     const team = await TeamRepository.create({
-      ...input,
-      updatedAt: new Date(),
+      team: {
+        ...input,
+        updatedAt: new Date(),
+      },
+      userId: 1,
     });
     return {
       team: { ...team, id: team.id.toString() },

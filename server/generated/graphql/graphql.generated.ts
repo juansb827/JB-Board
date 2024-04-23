@@ -74,12 +74,18 @@ export type Notification = {
   type?: Maybe<Scalars['String']['output']>;
 };
 
+export type PaginatedTeam = {
+  __typename?: 'PaginatedTeam';
+  nodes: Array<Team>;
+};
+
 export type Query = {
   __typename?: 'Query';
   Tweet?: Maybe<Tweet>;
   Tweets?: Maybe<Array<Maybe<Tweet>>>;
   TweetsMeta?: Maybe<Meta>;
   team?: Maybe<Team>;
+  teams?: Maybe<PaginatedTeam>;
   user?: Maybe<User>;
 };
 
@@ -217,6 +223,7 @@ export type ResolversTypes = {
   Meta: ResolverTypeWrapper<Meta>;
   Mutation: ResolverTypeWrapper<{}>;
   Notification: ResolverTypeWrapper<Notification>;
+  PaginatedTeam: ResolverTypeWrapper<PaginatedTeam>;
   Query: ResolverTypeWrapper<{}>;
   Stat: ResolverTypeWrapper<Stat>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -237,6 +244,7 @@ export type ResolversParentTypes = {
   Meta: Meta;
   Mutation: {};
   Notification: Notification;
+  PaginatedTeam: PaginatedTeam;
   Query: {};
   Stat: Stat;
   String: Scalars['String']['output'];
@@ -275,11 +283,17 @@ export type NotificationResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PaginatedTeamResolvers<ContextType = any, ParentType extends ResolversParentTypes['PaginatedTeam'] = ResolversParentTypes['PaginatedTeam']> = {
+  nodes?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   Tweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;
   Tweets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tweet']>>>, ParentType, ContextType, Partial<QueryTweetsArgs>>;
   TweetsMeta?: Resolver<Maybe<ResolversTypes['Meta']>, ParentType, ContextType>;
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<QueryTeamArgs, 'id'>>;
+  teams?: Resolver<Maybe<ResolversTypes['PaginatedTeam']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 };
 
@@ -324,6 +338,7 @@ export type Resolvers<ContextType = any> = {
   Meta?: MetaResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Notification?: NotificationResolvers<ContextType>;
+  PaginatedTeam?: PaginatedTeamResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;

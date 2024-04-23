@@ -8,6 +8,11 @@ const Query: FeaturesModule.QueryResolvers = {
       name: "Team 1",
     };
   },
+  teams: async (root) => {
+    return {
+      nodes: [],
+    };
+  },
 };
 
 const Mutation: FeaturesModule.MutationResolvers = {
