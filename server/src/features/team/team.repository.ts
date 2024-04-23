@@ -17,4 +17,13 @@ export class TeamRepository {
       return team;
     });
   }
+
+  static async findAll(args: { userId: number }) {
+    return (await getDb())
+      .selectFrom("Team")
+      .selectAll()
+      .innerJoin("TeamUser", "TeamUser.teamId", "Team.id")
+      .where("TeamUser.userId", "=", args.userId)
+      .execute();
+  }
 }

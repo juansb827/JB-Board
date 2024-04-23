@@ -8,6 +8,11 @@ const config: CodegenConfig = {
       //https://the-guild.dev/graphql/codegen/docs/guides/graphql-modules
       //https://github.com/darkbasic/graphql-modules-seed/blob/master/codegen.yml
       preset: "graphql-modules",
+      config: {
+        scalars: {
+          ID: "string | number",
+        },
+      },
       presetConfig: {
         baseTypesPath: "../generated/graphql/graphql.generated.ts",
         importBaseTypesFrom: "@generated/graphql/graphql.generated",

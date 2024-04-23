@@ -1,3 +1,4 @@
+import { Team } from "@generated/graphql/graphql.generated";
 import { FeaturesModule } from "../generated-types/module-types";
 import { TeamRepository } from "./team.repository";
 
@@ -13,7 +14,13 @@ export class TeamService {
       userId: 1,
     });
     return {
-      team: { ...team, id: team.id.toString() },
+      team,
     };
+  }
+
+  static async findAll(): Promise<Team[]> {
+    return TeamRepository.findAll({
+      userId: 1,
+    });
   }
 }

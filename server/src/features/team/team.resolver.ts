@@ -10,7 +10,7 @@ const Query: FeaturesModule.QueryResolvers = {
   },
   teams: async (root) => {
     return {
-      nodes: [],
+      nodes: await TeamService.findAll(),
     };
   },
 };
