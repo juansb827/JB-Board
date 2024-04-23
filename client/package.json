@@ -6,17 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "graphql:generate": "graphql-codegen",
+    "graphql:generate:watch": "graphql-codegen --watch src/**/*.graphql"
   },
   "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-slot": "^1.0.2",
+    "@tanstack/react-query": "^5.32.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "firebase": "^10.10.0",
     "firebase-admin": "^12.0.0",
     "firebaseui": "^6.1.0",
+    "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
     "lucide-react": "^0.364.0",
     "next": "14.1.4",
     "next-firebase-auth-edge": "^1.4.3",
@@ -28,6 +34,9 @@
     "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.2.5",
+    "@parcel/watcher": "^2.4.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -36,6 +45,7 @@
     "eslint-config-next": "14.1.4",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }
