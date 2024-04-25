@@ -36,7 +36,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createTeam?: Maybe<CreateTeamResponse>;
   createTweet?: Maybe<Tweet>;
-  createUser?: Maybe<User>;
+  createUser: User;
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -85,7 +85,7 @@ export type Query = {
   TweetsMeta?: Maybe<Meta>;
   team?: Maybe<Team>;
   teams?: Maybe<PaginatedTeam>;
-  user?: Maybe<User>;
+  user: User;
 };
 
 
@@ -139,13 +139,13 @@ export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
-  teams?: Maybe<Array<Scalars['String']['output']>>;
+  teams: Array<Team>;
 };
 
 export type UserDashboardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserDashboardQuery = { __typename?: 'Query', teams?: { __typename?: 'PaginatedTeam', nodes: Array<{ __typename?: 'Team', id: string, name: string }> } | null };
+export type UserDashboardQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, name?: string | null, teams: Array<{ __typename?: 'Team', id: string, name: string }> } };
 
 
-export const UserDashboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"userDashboard"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teams"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UserDashboardQuery, UserDashboardQueryVariables>;
+export const UserDashboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"userDashboard"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"StringValue","value":"1","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"teams"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UserDashboardQuery, UserDashboardQueryVariables>;

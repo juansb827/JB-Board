@@ -37,7 +37,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createTeam?: Maybe<CreateTeamResponse>;
   createTweet?: Maybe<Tweet>;
-  createUser?: Maybe<User>;
+  createUser: User;
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -86,7 +86,7 @@ export type Query = {
   TweetsMeta?: Maybe<Meta>;
   team?: Maybe<Team>;
   teams?: Maybe<PaginatedTeam>;
-  user?: Maybe<User>;
+  user: User;
 };
 
 
@@ -271,7 +271,7 @@ export type MetaResolvers<ContextType = any, ParentType extends ResolversParentT
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createTeam?: Resolver<Maybe<ResolversTypes['CreateTeamResponse']>, ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'input'>>;
   createTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, Partial<MutationCreateTweetArgs>>;
-  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationCreateUserArgs>>;
+  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationCreateUserArgs>>;
   deleteTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   markTweetRead?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMarkTweetReadArgs, 'id'>>;
 };
@@ -294,7 +294,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   TweetsMeta?: Resolver<Maybe<ResolversTypes['Meta']>, ParentType, ContextType>;
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<QueryTeamArgs, 'id'>>;
   teams?: Resolver<Maybe<ResolversTypes['PaginatedTeam']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 };
 
 export type StatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {

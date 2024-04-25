@@ -3,7 +3,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface ItemProps {
-  id: number;
+  id: string;
   isActive: boolean;
   name: string;
   imageUrl?: string;

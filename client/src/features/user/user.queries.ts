@@ -4,14 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 
 const userDashboardQueryDocument = graphql(`
   query userDashboard {
-    teams {
-      nodes {
+    user(id: "1") {
+      id
+      name
+      teams {
         id
         name
       }
     }
   }
 `);
+
 export const userDashboardQuery = () => ({
   queryKey: ["userDashboard"],
   queryFn: () => {

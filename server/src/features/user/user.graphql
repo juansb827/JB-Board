@@ -5,9 +5,9 @@ type User {
 }
 
 type Query {
-  user(id: ID!): User
+  user(id: ID!): User!
 }
 
 type Mutation {
-  createUser(input: String): User
+  createUser(input: String): User!
 }
