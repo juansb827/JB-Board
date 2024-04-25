@@ -7,6 +7,7 @@ const userDashboardQueryDocument = graphql(`
     user(id: "1") {
       id
       name
+      email
       teams {
         id
         name
@@ -15,7 +16,7 @@ const userDashboardQueryDocument = graphql(`
   }
 `);
 
-export const userDashboardQuery = (limit: any) => ({
+export const userDashboardQuery = (limit?: any) => ({
   queryKey: ["userDashboard"],
   queryFn: () => {
     console.log("FETCH userDashboardQuery");

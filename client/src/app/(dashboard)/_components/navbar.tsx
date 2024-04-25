@@ -14,6 +14,8 @@ import {
 import SearchInput from "./search-input";
 import { TeamDropdown } from "./team-dropdown";
 import InviteMember from "./invite-member-button";
+import { useUserDashboardInfo } from "@/features/user/user.queries";
+import { UserDashboardQuery } from "@generated/graphql/graphql";
 
 const UserImage = () => {
   return (
@@ -28,7 +30,7 @@ const UserImage = () => {
   );
 };
 
-const UserDropdown = () => {
+const UserDropdown = ({ user }: { user: UserDashboardQuery["user"] }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,8 +48,8 @@ const UserDropdown = () => {
         <div className="flex gap-x-3 items-center">
           <UserImage />
           <div className="flex flex-col flex-1">
-            <span className="font-semibold">User Name</span>
-            <span>useremail@sample.com</span>
+            <span className="font-semibold">{user?.name}</span>
+            <span>{user?.email}</span>
           </div>
         </div>
         <DropdownMenuSeparator />
@@ -66,6 +68,7 @@ const UserDropdown = () => {
 };
 
 export const Navbar = () => {
+  const { data, error, isFetching } = useUserDashboardInfo();
   return (
     <div className="flex align-center gap-4 flex-wrap ">
       <div className="hidden lg:flex lg:flex-1">
@@ -75,7 +78,7 @@ export const Navbar = () => {
         <TeamDropdown />
       </div>
       <InviteMember />
-      <UserDropdown />
+      {data && <UserDropdown user={data.user} />}
     </div>
   );
 };

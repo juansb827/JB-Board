@@ -7,7 +7,7 @@ export namespace FeaturesModule {
     Query: 'team' | 'teams' | 'user';
     CreateTeamResponse: 'team';
     Mutation: 'createTeam' | 'createUser';
-    User: 'id' | 'name' | 'teams';
+    User: 'id' | 'name' | 'email' | 'teams';
   };
   
   interface DefinedInputFields {

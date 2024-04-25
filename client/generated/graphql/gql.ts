@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation createTeam($input: CreateTeamInput!) {\n    createTeam(input: $input) {\n      team {\n        id\n        name\n      }\n    }\n  }\n": types.CreateTeamDocument,
-    "\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      teams {\n        id\n        name\n      }\n    }\n  }\n": types.UserDashboardDocument,
+    "\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      email\n      teams {\n        id\n        name\n      }\n    }\n  }\n": types.UserDashboardDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function graphql(source: "\n  mutation createTeam($input: CreateTeamInput
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      teams {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      teams {\n        id\n        name\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      email\n      teams {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      email\n      teams {\n        id\n        name\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
