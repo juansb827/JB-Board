@@ -15,7 +15,7 @@ const userDashboardQueryDocument = graphql(`
   }
 `);
 
-export const userDashboardQuery = () => ({
+export const userDashboardQuery = (limit: any) => ({
   queryKey: ["userDashboard"],
   queryFn: () => {
     console.log("FETCH userDashboardQuery");
@@ -28,5 +28,5 @@ export const userDashboardQuery = () => ({
 // };
 
 export const useUserDashboardInfo = (limit?: any) => {
-  return useQuery(userDashboardQuery());
+  return useQuery(userDashboardQuery(limit));
 };

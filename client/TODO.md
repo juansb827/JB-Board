@@ -14,6 +14,7 @@
 
   - DB diagram
 
+- mhttps://profy.dev/article/react-architecture-api-layer#the-final-result
 - https://nextjs.org/docs/app/building-your-application/rendering
 - Forward Ref
 - hooks
