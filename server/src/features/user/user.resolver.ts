@@ -1,11 +1,10 @@
 import { FeaturesModule } from "../generated-types/module-types";
+import { User } from "@generated/graphql/graphql.generated";
+import { UserService } from "./user.service";
 
 const Query: FeaturesModule.QueryResolvers = {
-  user: async (root) => {
-    return {
-      id: "1",
-      name: "User 342",
-    };
+  user: async (root, args) => {
+    return UserService.findOne(args.id);
   },
 };
 
@@ -19,7 +18,7 @@ const Mutation: FeaturesModule.MutationResolvers = {
 };
 const User: FeaturesModule.UserResolvers = {
   teams: async (root) => {
-    return Array(3).fill(root.name);
+    return UserService.loadUserTeams(root.id);
   },
 };
 const resolvers: FeaturesModule.Resolvers = {

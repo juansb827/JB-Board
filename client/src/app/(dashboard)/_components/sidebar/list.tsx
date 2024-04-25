@@ -2,6 +2,10 @@
 
 import React from "react";
 import Item from "./item";
+import { graphql } from "@generated/graphql/gql";
+import { useQuery } from "@tanstack/react-query";
+import request from "graphql-request";
+import { useUserDashboardInfo } from "@/features/user/user.queries";
 
 export const List = () => {
   const teams = [

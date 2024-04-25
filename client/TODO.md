@@ -8,10 +8,13 @@
   - remove tsnode and nodemon
   - Generic CrudService/Repository/Resolver
   - UpdatedAT trigger
+  - Prefetch on Server Components
+    https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr
 - Others
 
   - DB diagram
 
+- https://nextjs.org/docs/app/building-your-application/rendering
 - Forward Ref
 - hooks
 - next router vs navigation

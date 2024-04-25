@@ -140,12 +140,12 @@ export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
-  teams?: Maybe<Array<Scalars['String']['output']>>;
+  teams: Array<Team>;
 };
 
 
 
-export type ResolverTypeWrapper<T> = Promise<T> | T;
+export type ResolverTypeWrapper<T> = T | Promise<T> | Partial<T> | Promise<Partial<T>>;
 
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
@@ -328,7 +328,7 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  teams?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  teams?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

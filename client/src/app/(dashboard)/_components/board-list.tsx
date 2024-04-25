@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
 import EmptySearch from "./empty-search";
 import EmptyFavorites from "./empty-favorites";
 import EmptyTeamBoards from "./empty-team-boards";
+import { useUserDashboardInfo } from "@/features/user/user.queries";
 
 interface BoardListProps {
   teamId: string;
@@ -15,6 +17,9 @@ const BoardList = ({
   teamName,
   searchParams: { favorites, searchTerm },
 }: BoardListProps) => {
+  const { data: dashboardInfo } = useUserDashboardInfo();
+  console.log("List Team Component", dashboardInfo);
+
   const data = [];
   if (!data?.length) {
     if (favorites) {

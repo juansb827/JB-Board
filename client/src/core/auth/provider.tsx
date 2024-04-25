@@ -2,15 +2,22 @@
 import React from "react";
 import { useUserSession } from "./hooks";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "../query";
+import { getQueryClient } from "../query";
+//import { queryClient } from "../query";
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
+  // NOTE: Avoid useState when initializing the query client if you don't
+  //       have a suspense boundary between this and the code that may
+  //       suspend because React will throw away the client on the initial
+  //       render if it suspends and there is no boundary
+  const queryClient = getQueryClient();
+
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
   return children;
-  const user = useUserSession(undefined);
-  return user ? <>{children}</> : <div>No user</div>;
+  // const user = useUserSession(undefined);
+  // return user ? <>{children}</> : <div>No user</div>;
 }
 
 export default AuthProvider;

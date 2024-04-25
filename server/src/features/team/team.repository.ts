@@ -1,4 +1,5 @@
 import { getDb } from "@/core/database";
+import { ID } from "@/shared/types";
 import { Team } from "@generated/db/types.generated";
 import { Insertable } from "kysely";
 
@@ -18,12 +19,21 @@ export class TeamRepository {
     });
   }
 
-  static async findAll(args: { userId: number }) {
+  static async findAll(args: { userId: ID }) {
     return (await getDb())
       .selectFrom("Team")
       .selectAll()
       .innerJoin("TeamUser", "TeamUser.teamId", "Team.id")
-      .where("TeamUser.userId", "=", args.userId)
+      .where("TeamUser.userId", "=", +args.userId)
+      .execute();
+  }
+
+  static async loadAll(args: { userId: ID }) {
+    return (await getDb())
+      .selectFrom("Team")
+      .selectAll()
+      .innerJoin("TeamUser", "TeamUser.teamId", "Team.id")
+      .where("TeamUser.userId", "in", [+args.userId])
       .execute();
   }
 }

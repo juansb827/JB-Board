@@ -3,6 +3,11 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 const config: CodegenConfig = {
   schema: "./src/**/*.graphql",
   require: ["tsconfig-paths/register"],
+  // config: {
+
+  //   resolverTypeWrapperSignature:
+  //     "T | Promise<T> | Partial<T> | Promise<Partial<T>>", // allow for partial resolving (useful for field level resolving)
+  // },
   generates: {
     "./src/": {
       //https://the-guild.dev/graphql/codegen/docs/guides/graphql-modules
@@ -12,6 +17,8 @@ const config: CodegenConfig = {
         scalars: {
           ID: "string | number",
         },
+        resolverTypeWrapperSignature:
+          "T | Promise<T> | Partial<T> | Promise<Partial<T>>", // allow for partial resolving (useful for field level resolving)
       },
       presetConfig: {
         baseTypesPath: "../generated/graphql/graphql.generated.ts",

@@ -1,7 +1,7 @@
 type User {
   id: ID!
   name: String
-  teams: [String!]
+  teams: [Team!]!
 }
 
 type Query {

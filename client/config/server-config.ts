@@ -21,7 +21,8 @@ export const authConfig = {
     path: "/",
     httpOnly: true,
     secure: serverConfig.useSecureCookies, // Set this to true on HTTPS environments
-    sameSite: "lax" as const,
+    sameSite: "strict" as const,
+    //sameSite: "strict",
     maxAge: 12 * 60 * 60 * 24, // twelve days
   },
   serviceAccount: serverConfig.serviceAccount,
