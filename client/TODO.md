@@ -10,6 +10,7 @@
   - UpdatedAT trigger
   - Prefetch on Server Components
     https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr
+  - Refetch using tags
 - Others
 
   - DB diagram

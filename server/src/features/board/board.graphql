@@ -1,0 +1,20 @@
+type Board {
+  id: ID!
+  title: String!
+  author: User!
+  team: Team!
+  imageUrl: String!
+}
+
+input CreateBoardInput {
+  title: String!
+  teamId: ID!
+}
+
+type CreateBoardResponse {
+  board: Board!
+}
+
+type Mutation {
+  createBoard(input: CreateBoardInput!): CreateBoardResponse
+}

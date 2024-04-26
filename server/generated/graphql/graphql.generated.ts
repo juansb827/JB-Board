@@ -19,6 +19,25 @@ export type Scalars = {
   Url: { input: any; output: any; }
 };
 
+export type Board = {
+  __typename?: 'Board';
+  author: User;
+  id: Scalars['ID']['output'];
+  imageUrl: Scalars['String']['output'];
+  team: Team;
+  title: Scalars['String']['output'];
+};
+
+export type CreateBoardInput = {
+  teamId: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type CreateBoardResponse = {
+  __typename?: 'CreateBoardResponse';
+  board: Board;
+};
+
 export type CreateTeamInput = {
   name: Scalars['String']['input'];
 };
@@ -35,11 +54,17 @@ export type Meta = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createBoard?: Maybe<CreateBoardResponse>;
   createTeam?: Maybe<CreateTeamResponse>;
   createTweet?: Maybe<Tweet>;
   createUser: User;
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
+};
+
+
+export type MutationCreateBoardArgs = {
+  input: CreateBoardInput;
 };
 
 
@@ -215,7 +240,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Board: ResolverTypeWrapper<Board>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateBoardInput: CreateBoardInput;
+  CreateBoardResponse: ResolverTypeWrapper<CreateBoardResponse>;
   CreateTeamInput: CreateTeamInput;
   CreateTeamResponse: ResolverTypeWrapper<CreateTeamResponse>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
@@ -236,7 +264,10 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Board: Board;
   Boolean: Scalars['Boolean']['output'];
+  CreateBoardInput: CreateBoardInput;
+  CreateBoardResponse: CreateBoardResponse;
   CreateTeamInput: CreateTeamInput;
   CreateTeamResponse: CreateTeamResponse;
   Date: Scalars['Date']['output'];
@@ -255,6 +286,20 @@ export type ResolversParentTypes = {
   User: User;
 };
 
+export type BoardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = {
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  team?: Resolver<ResolversTypes['Team'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateBoardResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateBoardResponse'] = ResolversParentTypes['CreateBoardResponse']> = {
+  board?: Resolver<ResolversTypes['Board'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateTeamResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateTeamResponse'] = ResolversParentTypes['CreateTeamResponse']> = {
   team?: Resolver<ResolversTypes['Team'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -270,6 +315,7 @@ export type MetaResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createBoard?: Resolver<Maybe<ResolversTypes['CreateBoardResponse']>, ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'input'>>;
   createTeam?: Resolver<Maybe<ResolversTypes['CreateTeamResponse']>, ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'input'>>;
   createTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, Partial<MutationCreateTweetArgs>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationCreateUserArgs>>;
@@ -335,6 +381,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Board?: BoardResolvers<ContextType>;
+  CreateBoardResponse?: CreateBoardResponseResolvers<ContextType>;
   CreateTeamResponse?: CreateTeamResponseResolvers<ContextType>;
   Date?: GraphQLScalarType;
   Meta?: MetaResolvers<ContextType>;

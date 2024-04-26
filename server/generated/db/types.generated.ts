@@ -4,46 +4,57 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export type Board = {
+    id: Generated<string | number>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Timestamp;
+    deletedAt: Timestamp | null;
+    title: string;
+    authorId: string | number;
+    teamId: string | number;
+    imageUrl: string;
+};
 export type Comment = {
-    id: Generated<number>;
+    id: Generated<string | number>;
     createdAt: Generated<Timestamp>;
     updatedAt: Timestamp;
     title: string;
     content: string | null;
-    postId: number;
+    postId: string | number;
 };
 export type Post = {
-    id: Generated<number>;
+    id: Generated<string | number>;
     createdAt: Generated<Timestamp>;
     updatedAt: Timestamp;
     title: string;
     content: string | null;
     published: Generated<boolean>;
-    authorId: number;
+    authorId: string | number;
 };
 export type Profile = {
-    id: Generated<number>;
+    id: Generated<string | number>;
     bio: string | null;
-    userId: number;
+    userId: string | number;
 };
 export type Team = {
-    id: Generated<number>;
+    id: Generated<string | number>;
     createdAt: Generated<Timestamp>;
     updatedAt: Timestamp;
     deletedAt: Timestamp | null;
     name: string;
 };
 export type TeamUser = {
-    userId: number;
-    teamId: number;
+    userId: string | number;
+    teamId: string | number;
     createdAt: Generated<Timestamp>;
 };
 export type User = {
-    id: Generated<number>;
+    id: Generated<string | number>;
     email: string;
     name: string | null;
 };
 export type DB = {
+    Board: Board;
     Comment: Comment;
     Post: Post;
     Profile: Profile;

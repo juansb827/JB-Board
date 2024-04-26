@@ -16,6 +16,7 @@ generator client {
   fileName     = "types.generated.ts"
   // Optionally generate runtime enums to a separate file
   enumFileName = "enums.ts"
+  intTypeOverride = "string | number"
 }
 
 datasource db {
@@ -60,6 +61,7 @@ model User {
   posts    Post[]
   profile  Profile?
   teams    TeamUser[]
+  boards   Board[]
 }
 
 model Team {
@@ -69,6 +71,7 @@ model Team {
   deletedAt DateTime?
   name      String     @unique
   users  TeamUser[]
+  boards   Board[]
 }
 
 model TeamUser {
@@ -78,4 +81,17 @@ model TeamUser {
   teamId Int
   createdAt DateTime   @default(now())
   @@id([teamId, userId])
+}
+
+model Board {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  title      String     
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  team Team @relation(fields: [teamId], references: [id])
+  teamId Int
+  imageUrl String
 }
