@@ -18,6 +18,25 @@ export type Scalars = {
   Url: { input: any; output: any; }
 };
 
+export type Board = {
+  __typename?: 'Board';
+  author: User;
+  id: Scalars['ID']['output'];
+  imageUrl: Scalars['String']['output'];
+  team: Team;
+  title: Scalars['String']['output'];
+};
+
+export type CreateBoardInput = {
+  teamId: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type CreateBoardResponse = {
+  __typename?: 'CreateBoardResponse';
+  board: Board;
+};
+
 export type CreateTeamInput = {
   name: Scalars['String']['input'];
 };
@@ -34,11 +53,17 @@ export type Meta = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createBoard?: Maybe<CreateBoardResponse>;
   createTeam?: Maybe<CreateTeamResponse>;
   createTweet?: Maybe<Tweet>;
   createUser: User;
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
+};
+
+
+export type MutationCreateBoardArgs = {
+  input: CreateBoardInput;
 };
 
 
@@ -143,6 +168,13 @@ export type User = {
   teams: Array<Team>;
 };
 
+export type CreateBoardMutationVariables = Exact<{
+  input: CreateBoardInput;
+}>;
+
+
+export type CreateBoardMutation = { __typename?: 'Mutation', createBoard?: { __typename?: 'CreateBoardResponse', board: { __typename?: 'Board', id: string, title: string } } | null };
+
 export type CreateTeamMutationVariables = Exact<{
   input: CreateTeamInput;
 }>;
@@ -156,5 +188,6 @@ export type UserDashboardQueryVariables = Exact<{ [key: string]: never; }>;
 export type UserDashboardQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, name: string, email: string, teams: Array<{ __typename?: 'Team', id: string, name: string }> } };
 
 
+export const CreateBoardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createBoard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBoardInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBoard"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"board"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]} as unknown as DocumentNode<CreateBoardMutation, CreateBoardMutationVariables>;
 export const CreateTeamDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createTeam"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateTeamInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTeam"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"team"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<CreateTeamMutation, CreateTeamMutationVariables>;
 export const UserDashboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"userDashboard"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"StringValue","value":"1","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"teams"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UserDashboardQuery, UserDashboardQueryVariables>;

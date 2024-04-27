@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev2": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "graphql:generate": "graphql-codegen",
-    "graphql:generate:watch": "graphql-codegen --watch src/**/*.graphql"
+    "graphql:generate:watch": "graphql-codegen --watch src/**/*.queries.ts"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
@@ -26,9 +27,11 @@
     "lucide-react": "^0.364.0",
     "next": "14.1.4",
     "next-firebase-auth-edge": "^1.4.3",
+    "next-themes": "^0.3.0",
     "query-string": "^9.0.0",
     "react": "^18",
     "react-dom": "^18",
+    "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.0"
