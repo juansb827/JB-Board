@@ -12,7 +12,7 @@ const EmptyTeamBoards = ({ teamName }: EmptyTeamBoards) => {
 
   const handleCreate = async () => {
     mutate({
-      teamId: "32",
+      teamId: "33",
       title: "First Board 33",
     });
   };

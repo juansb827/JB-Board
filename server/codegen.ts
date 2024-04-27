@@ -18,7 +18,7 @@ const config: CodegenConfig = {
           ID: "string | number",
         },
         resolverTypeWrapperSignature:
-          "T | Promise<T> | Partial<T> | Promise<Partial<T>>", // allow for partial resolving (useful for field level resolving)
+          "T | Promise<T> | DeepPartial<T> | Promise<DeepPartial<T>>", // allow for partial resolving (useful for field level resolving)
       },
       presetConfig: {
         baseTypesPath: "../generated/graphql/graphql.generated.ts",
@@ -29,7 +29,9 @@ const config: CodegenConfig = {
       plugins: [
         {
           add: {
-            content: "/* eslint-disable */",
+            content: `/* eslint-disable */
+              type DeepPartial<T> = { [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P] } 
+            `,
           },
         },
         "typescript",

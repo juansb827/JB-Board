@@ -15,6 +15,18 @@ type CreateBoardResponse {
   board: Board!
 }
 
+input BoardsFilterInput {
+  teamId: ID!
+}
+
+type BoardResponse {
+  nodes: [Board!]!
+}
+
+type Query {
+  boards(filter: BoardsFilterInput!): BoardResponse
+}
+
 type Mutation {
   createBoard(input: CreateBoardInput!): CreateBoardResponse
 }

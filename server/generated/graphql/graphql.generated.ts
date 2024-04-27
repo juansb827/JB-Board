@@ -1,4 +1,6 @@
 /* eslint-disable */
+              type DeepPartial<T> = { [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P] } 
+            
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -26,6 +28,15 @@ export type Board = {
   imageUrl: Scalars['String']['output'];
   team: Team;
   title: Scalars['String']['output'];
+};
+
+export type BoardResponse = {
+  __typename?: 'BoardResponse';
+  nodes: Array<Board>;
+};
+
+export type BoardsFilterInput = {
+  teamId: Scalars['ID']['input'];
 };
 
 export type CreateBoardInput = {
@@ -109,6 +120,7 @@ export type Query = {
   Tweet?: Maybe<Tweet>;
   Tweets?: Maybe<Array<Maybe<Tweet>>>;
   TweetsMeta?: Maybe<Meta>;
+  boards?: Maybe<BoardResponse>;
   team?: Maybe<Team>;
   teams?: Maybe<PaginatedTeam>;
   user: User;
@@ -125,6 +137,11 @@ export type QueryTweetsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   sort_field?: InputMaybe<Scalars['String']['input']>;
   sort_order?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryBoardsArgs = {
+  filter: BoardsFilterInput;
 };
 
 
@@ -171,7 +188,7 @@ export type User = {
 
 
 
-export type ResolverTypeWrapper<T> = T | Promise<T> | Partial<T> | Promise<Partial<T>>;
+export type ResolverTypeWrapper<T> = T | Promise<T> | DeepPartial<T> | Promise<DeepPartial<T>>;
 
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
@@ -241,6 +258,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Board: ResolverTypeWrapper<Board>;
+  BoardResponse: ResolverTypeWrapper<BoardResponse>;
+  BoardsFilterInput: BoardsFilterInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateBoardInput: CreateBoardInput;
   CreateBoardResponse: ResolverTypeWrapper<CreateBoardResponse>;
@@ -265,6 +284,8 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Board: Board;
+  BoardResponse: BoardResponse;
+  BoardsFilterInput: BoardsFilterInput;
   Boolean: Scalars['Boolean']['output'];
   CreateBoardInput: CreateBoardInput;
   CreateBoardResponse: CreateBoardResponse;
@@ -292,6 +313,11 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   team?: Resolver<ResolversTypes['Team'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BoardResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BoardResponse'] = ResolversParentTypes['BoardResponse']> = {
+  nodes?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -339,6 +365,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Tweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;
   Tweets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tweet']>>>, ParentType, ContextType, Partial<QueryTweetsArgs>>;
   TweetsMeta?: Resolver<Maybe<ResolversTypes['Meta']>, ParentType, ContextType>;
+  boards?: Resolver<Maybe<ResolversTypes['BoardResponse']>, ParentType, ContextType, RequireFields<QueryBoardsArgs, 'filter'>>;
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<QueryTeamArgs, 'id'>>;
   teams?: Resolver<Maybe<ResolversTypes['PaginatedTeam']>, ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
@@ -382,6 +409,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   Board?: BoardResolvers<ContextType>;
+  BoardResponse?: BoardResponseResolvers<ContextType>;
   CreateBoardResponse?: CreateBoardResponseResolvers<ContextType>;
   CreateTeamResponse?: CreateTeamResponseResolvers<ContextType>;
   Date?: GraphQLScalarType;

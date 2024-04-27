@@ -1,8 +1,18 @@
 import { getDb } from "@/core/database";
+import { ID } from "@/shared/types";
 import { Board } from "@generated/db/types.generated";
 import { Insertable, Selectable, sql } from "kysely";
 
 export class BoardRepository {
+  static async findAll(args: { teamId: ID; userId: ID }) {
+    return (await getDb())
+      .selectFrom("Board")
+      .selectAll()
+      .where("Board.teamId", "=", args.teamId)
+      .innerJoin("TeamUser", "TeamUser.teamId", "Board.teamId")
+      .where("TeamUser.userId", "=", args.userId)
+      .execute();
+  }
   static async create({
     board,
   }: {
