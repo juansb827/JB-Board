@@ -65,7 +65,7 @@ export type Meta = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createBoard?: Maybe<CreateBoardResponse>;
+  createBoard: CreateBoardResponse;
   createTeam?: Maybe<CreateTeamResponse>;
   createTweet?: Maybe<Tweet>;
   createUser: User;
@@ -120,7 +120,7 @@ export type Query = {
   Tweet?: Maybe<Tweet>;
   Tweets?: Maybe<Array<Maybe<Tweet>>>;
   TweetsMeta?: Maybe<Meta>;
-  boards?: Maybe<BoardResponse>;
+  boards: BoardResponse;
   team?: Maybe<Team>;
   teams?: Maybe<PaginatedTeam>;
   user: User;
@@ -341,7 +341,7 @@ export type MetaResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createBoard?: Resolver<Maybe<ResolversTypes['CreateBoardResponse']>, ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'input'>>;
+  createBoard?: Resolver<ResolversTypes['CreateBoardResponse'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'input'>>;
   createTeam?: Resolver<Maybe<ResolversTypes['CreateTeamResponse']>, ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'input'>>;
   createTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, Partial<MutationCreateTweetArgs>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationCreateUserArgs>>;
@@ -365,7 +365,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Tweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;
   Tweets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tweet']>>>, ParentType, ContextType, Partial<QueryTweetsArgs>>;
   TweetsMeta?: Resolver<Maybe<ResolversTypes['Meta']>, ParentType, ContextType>;
-  boards?: Resolver<Maybe<ResolversTypes['BoardResponse']>, ParentType, ContextType, RequireFields<QueryBoardsArgs, 'filter'>>;
+  boards?: Resolver<ResolversTypes['BoardResponse'], ParentType, ContextType, RequireFields<QueryBoardsArgs, 'filter'>>;
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<QueryTeamArgs, 'id'>>;
   teams?: Resolver<Maybe<ResolversTypes['PaginatedTeam']>, ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;

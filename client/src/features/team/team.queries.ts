@@ -13,9 +13,11 @@ const createTeamDocument = graphql(`
     }
   }
 `);
-const createTeam = (input: CreateTeamInput) => {
-  return graphQLClient.request(createTeamDocument, { input });
-};
+
+// const createTeam = (input: CreateTeamInput) => {
+//   return graphQLClient.request(createTeamDocument, { input });
+// };
+
 export const useCreateTeam = () => {
   const queryClient = useQueryClient();
   return useMutation({

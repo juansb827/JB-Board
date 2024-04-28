@@ -24,9 +24,9 @@ type BoardResponse {
 }
 
 type Query {
-  boards(filter: BoardsFilterInput!): BoardResponse
+  boards(filter: BoardsFilterInput!): BoardResponse!
 }
 
 type Mutation {
-  createBoard(input: CreateBoardInput!): CreateBoardResponse
+  createBoard(input: CreateBoardInput!): CreateBoardResponse!
 }

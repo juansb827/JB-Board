@@ -1,7 +1,10 @@
 import { graphQLClient } from "@/core/query";
 import { graphql } from "@generated/graphql";
-import { CreateBoardInput } from "@generated/graphql/graphql";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  BoardsFilterInput,
+  CreateBoardInput,
+} from "@generated/graphql/graphql";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const createBoardDocument = graphql(`
@@ -9,6 +12,18 @@ const createBoardDocument = graphql(`
     createBoard(input: $input) {
       board {
         id
+        title
+      }
+    }
+  }
+`);
+
+const boardsDocument = graphql(`
+  query boards($filter: BoardsFilterInput!) {
+    boards(filter: $filter) {
+      nodes {
+        id
+        imageUrl
         title
       }
     }
@@ -27,5 +42,12 @@ export const useCreateBoard = () => {
     onSuccess: () => {
       toast.success("Board created", {});
     },
+  });
+};
+
+export const useBoards = (filter: BoardsFilterInput) => {
+  return useQuery({
+    queryKey: ["boards", filter],
+    queryFn: () => graphQLClient.request(boardsDocument, { filter }),
   });
 };
