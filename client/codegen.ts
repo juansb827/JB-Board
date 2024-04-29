@@ -7,6 +7,11 @@ const config: CodegenConfig = {
   generates: {
     "./generated/graphql/": {
       preset: "client",
+      config: {
+        scalars: {
+          Date: "string",
+        },
+      },
     },
   },
 };

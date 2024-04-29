@@ -1,5 +1,7 @@
 type Board {
   id: ID!
+  createdAt: Date!
+  updatedAt: Date!
   title: String!
   author: User!
   team: Team!

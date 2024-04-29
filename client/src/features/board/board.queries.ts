@@ -23,8 +23,13 @@ const boardsDocument = graphql(`
     boards(filter: $filter) {
       nodes {
         id
+        updatedAt
         imageUrl
         title
+        author {
+          id
+          name
+        }
       }
     }
   }

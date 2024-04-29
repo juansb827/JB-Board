@@ -34,6 +34,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { BoardsDocument, BoardsQuery } from "@generated/graphql/graphql";
+import { formatDistanceToNow } from "date-fns";
 
 const BoardDropdown = () => {
   return (
@@ -66,21 +68,69 @@ const SquarePlusButton = () => (
   </Button>
 );
 
+const BoardTableRow = ({
+  board,
+}: {
+  board: BoardsQuery["boards"]["nodes"][number];
+}) => {
+  const author = board.author.name;
+  const lastEditor = board.author.name; // TODO: fix
+  const lastUpdateAt = formatDistanceToNow(board.updatedAt, {
+    addSuffix: true,
+  });
+  return (
+    <TableRow key={board.id}>
+      <TableCell>
+        <div className="w-10 h-10  border rounded-sm relative">
+          <Image alt={"Board Image"} fill src={board.imageUrl} />
+        </div>
+      </TableCell>
+      <TableCell className="h-10">
+        <div className="">
+          <p className="font-semibold truncate ... ">
+            {board.title}
+            {board.title}
+          </p>
+          <p className="text-muted-foreground truncate ...">
+            Modified by {lastEditor}, {lastUpdateAt}
+          </p>
+        </div>
+      </TableCell>
+      <TableCell className="hidden sm:table-cell">{author}</TableCell>
+      <TableCell className="flex justify-center">
+        <Star
+          // fill="rgb(30 64 175)"
+          // className="text-gray-500 hover:text-blue-800 "
+          className={cn([
+            "text-gray-300 hover:text-blue-800 transition",
+            +board.id % 2 === 1 && "text-blue-800 fill-blue-800",
+          ])}
+        />
+      </TableCell>
+      <TableCell>
+        <BoardDropdown />
+      </TableCell>
+    </TableRow>
+  );
+};
+
 interface BoardListProps {
-  teamId: string;
-  teamName: string;
+  team: {
+    id: string;
+    name: string;
+  };
   searchParams: {
     favorites: boolean;
     searchTerm?: string;
   };
 }
 const BoardList = ({
-  teamName,
+  team,
   searchParams: { favorites, searchTerm },
 }: BoardListProps) => {
   // const { data: dashboardInfo } = useUserDashboardInfo();
   // console.log("List Team Component", dashboardInfo);
-  const { data, isLoading } = useBoards({ teamId: "33" });
+  const { data, isLoading } = useBoards({ teamId: team.id });
 
   if (isLoading) {
     return <div>Loading</div>;
@@ -93,12 +143,12 @@ const BoardList = ({
 
   if (!boards?.length) {
     if (favorites) {
-      return <EmptyFavorites teamName={teamName} />;
+      return <EmptyFavorites teamName={team.name} />;
     }
     if (searchTerm) {
-      return <EmptySearch searchTerm={searchTerm} teamName={teamName} />;
+      return <EmptySearch searchTerm={searchTerm} teamName={team.name} />;
     }
-    return <EmptyTeamBoards teamName={teamName} />;
+    return <EmptyTeamBoards team={team} />;
   }
   return (
     <Table className="table-fixed">
@@ -112,7 +162,7 @@ const BoardList = ({
               New Board
             </span>
           </TableHead>
-          <TableHead className="lg:w-64">
+          <TableHead className="hidden sm:table-cell">
             <span>Owner</span>
           </TableHead>
           <TableHead className="lg:w-32 text-center">Favorites</TableHead>
@@ -122,42 +172,7 @@ const BoardList = ({
       </TableHeader>
       <TableBody>
         {boards.map((board) => (
-          <TableRow key={board.id}>
-            <TableCell>
-              <div className="w-10 h-10  border rounded-sm relative">
-                <Image
-                  alt={"Board Image"}
-                  fill
-                  src={"https://placehold.co/600x600"}
-                />
-              </div>
-            </TableCell>
-            <TableCell className="h-10">
-              <div className="">
-                <p className="font-semibold truncate ... ">
-                  {board.title}
-                  {board.title}
-                </p>
-                <p className="text-muted-foreground truncate ...">
-                  Modified by Put A Name Here. Apr 25{" "}
-                </p>
-              </div>
-            </TableCell>
-            <TableCell>Some Other User</TableCell>
-            <TableCell className="flex justify-center">
-              <Star
-                // fill="rgb(30 64 175)"
-                // className="text-gray-500 hover:text-blue-800 "
-                className={cn([
-                  "text-gray-300 hover:text-blue-800 transition",
-                  +board.id % 2 === 1 && "text-blue-800 fill-blue-800",
-                ])}
-              />
-            </TableCell>
-            <TableCell>
-              <BoardDropdown />
-            </TableCell>
-          </TableRow>
+          <BoardTableRow board={board} key={board.id} />
         ))}
       </TableBody>
     </Table>

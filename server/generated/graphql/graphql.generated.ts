@@ -24,10 +24,12 @@ export type Scalars = {
 export type Board = {
   __typename?: 'Board';
   author: User;
+  createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
   team: Team;
   title: Scalars['String']['output'];
+  updatedAt: Scalars['Date']['output'];
 };
 
 export type BoardResponse = {
@@ -309,10 +311,12 @@ export type ResolversParentTypes = {
 
 export type BoardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = {
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   team?: Resolver<ResolversTypes['Team'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

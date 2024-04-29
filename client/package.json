@@ -19,6 +19,7 @@
     "@tanstack/react-query": "^5.32.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^3.6.0",
     "firebase": "^10.10.0",
     "firebase-admin": "^12.0.0",
     "firebaseui": "^6.1.0",

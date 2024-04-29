@@ -4,7 +4,7 @@
 import * as Types from "@generated/graphql/graphql.generated";
 export namespace FeaturesModule {
   interface DefinedFields {
-    Board: 'id' | 'title' | 'author' | 'team' | 'imageUrl';
+    Board: 'id' | 'createdAt' | 'updatedAt' | 'title' | 'author' | 'team' | 'imageUrl';
     CreateBoardResponse: 'board';
     BoardResponse: 'nodes';
     Query: 'boards' | 'team' | 'teams' | 'user';
@@ -22,6 +22,7 @@ export namespace FeaturesModule {
   };
   
   export type Board = Pick<Types.Board, DefinedFields['Board']>;
+  export type Date = Types.Date;
   export type User = Pick<Types.User, DefinedFields['User']>;
   export type Team = Pick<Types.Team, DefinedFields['Team']>;
   export type CreateBoardInput = Pick<Types.CreateBoardInput, DefinedInputFields['CreateBoardInput']>;
