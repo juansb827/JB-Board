@@ -36,6 +36,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { BoardsDocument, BoardsQuery } from "@generated/graphql/graphql";
 import { formatDistanceToNow } from "date-fns";
+import { junit } from "node:test/reporters";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BoardDropdown = () => {
   return (
@@ -62,7 +64,7 @@ const SquarePlusButton = ({
   disabled,
   onClick,
 }: {
-  disabled: boolean;
+  disabled?: boolean;
   onClick: MouseEventHandler;
 }) => (
   <Button variant="ghost" className="p-0" disabled={disabled} onClick={onClick}>
@@ -74,6 +76,19 @@ const SquarePlusButton = ({
   </Button>
 );
 
+const BoardTableRowSkeleton = () => {
+  return (
+    <TableRow>
+      <TableCell>
+        <Skeleton className="w-10 h-10 rounded-sm" />
+      </TableCell>
+      <TableCell className="h-10 space-y-2">
+        <Skeleton className="h-4 w-[200px]" />
+        <Skeleton className="h-4 w-[250px]" />
+      </TableCell>
+    </TableRow>
+  );
+};
 const BoardTableRow = ({
   board,
 }: {
@@ -117,26 +132,18 @@ const BoardTableRow = ({
   );
 };
 
-interface BoardListProps {
+type BoardTableProps = {
   team: {
     id: string;
     name: string;
   };
-  searchParams: {
-    favorites: boolean;
-    searchTerm?: string;
-  };
-}
-const BoardList = ({
-  team,
-  searchParams: { favorites, searchTerm },
-}: BoardListProps) => {
-  // const { data: dashboardInfo } = useUserDashboardInfo();
-  // console.log("List Team Component", dashboardInfo);
-  const { data, isLoading: isQueryLoading } = useBoards({ teamId: team.id });
-  const { mutateAsync, mutate, isPending: isCreatePending } = useCreateBoard();
-  const isAnyLoading = isQueryLoading || isCreatePending;
+  isQueryLoading?: boolean;
+  boards: BoardsQuery["boards"]["nodes"];
+};
 
+const BoardTable = (props: BoardTableProps) => {
+  const { team, isQueryLoading, boards } = props;
+  const { mutateAsync, mutate, isPending: isCreatePending } = useCreateBoard();
   const handleCreate = async () => {
     if (isCreatePending) {
       return;
@@ -146,24 +153,8 @@ const BoardList = ({
     });
   };
 
-  if (isQueryLoading) {
-    return <div>Loading</div>;
-  }
+  const isAnyLoading = isCreatePending || isQueryLoading;
 
-  if (!data) {
-    return <div>Error</div>;
-  }
-  const boards = data.boards.nodes;
-
-  if (!boards?.length) {
-    if (favorites) {
-      return <EmptyFavorites teamName={team.name} />;
-    }
-    if (searchTerm) {
-      return <EmptySearch searchTerm={searchTerm} teamName={team.name} />;
-    }
-    return <EmptyTeamBoards team={team} />;
-  }
   return (
     <Table className="table-fixed">
       <TableHeader>
@@ -191,12 +182,56 @@ const BoardList = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {boards.map((board) => (
-          <BoardTableRow board={board} key={board.id} />
-        ))}
+        {isQueryLoading
+          ? Array(7)
+              .fill(null)
+              .map((_, idx) => <BoardTableRowSkeleton key={idx} />)
+          : boards.map((board) => (
+              <BoardTableRow board={board} key={board.id} />
+            ))}
       </TableBody>
     </Table>
   );
+};
+
+interface BoardListProps {
+  team: {
+    id: string;
+    name: string;
+  };
+  searchParams: {
+    favorites: boolean;
+    searchTerm?: string;
+  };
+}
+const BoardList = ({
+  team,
+  searchParams: { favorites, searchTerm },
+}: BoardListProps) => {
+  // const { data: dashboardInfo } = useUserDashboardInfo();
+  // console.log("List Team Component", dashboardInfo);
+  const result = useBoards({ teamId: team.id });
+  const { data, isLoading: isQueryLoading } = result;
+
+  if (isQueryLoading) {
+    return <BoardTable team={team} isQueryLoading={true} boards={[]} />;
+  }
+
+  if (!data) {
+    return <div>Error</div>;
+  }
+  const boards = data.boards.nodes;
+
+  if (!boards?.length) {
+    if (favorites) {
+      return <EmptyFavorites teamName={team.name} />;
+    }
+    if (searchTerm) {
+      return <EmptySearch searchTerm={searchTerm} teamName={team.name} />;
+    }
+    return <EmptyTeamBoards team={team} />;
+  }
+  return <BoardTable team={team} boards={data.boards.nodes} />;
 };
 
 export default BoardList;
