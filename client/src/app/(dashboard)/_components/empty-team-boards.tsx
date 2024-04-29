@@ -15,8 +15,7 @@ const EmptyTeamBoards = ({ team }: EmptyTeamBoards) => {
 
   const handleCreate = async () => {
     mutate({
-      teamId: "33",
-      title: "First Board 33",
+      teamId: team.id,
     });
   };
 

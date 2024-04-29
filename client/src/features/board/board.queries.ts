@@ -46,6 +46,8 @@ export const useCreateBoard = () => {
     },
     onSuccess: () => {
       toast.success("Board created", {});
+      // todo invalidate type
+      queryClient.invalidateQueries({ queryKey: ["boards"] });
     },
   });
 };

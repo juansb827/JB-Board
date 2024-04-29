@@ -14,9 +14,19 @@ const Mutation: FeaturesModule.MutationResolvers = {
   },
 };
 
+const Board: FeaturesModule.BoardResolvers = {
+  imageUrl: (parent) => {
+    return parent.imageUrl || "https://placehold.co/512x512";
+  },
+  title: (parent) => parent.title || "Untitled",
+  author: (parent) => {
+    return BoardService.loadAuthor(parent);
+  },
+};
+
 const resolvers: FeaturesModule.Resolvers = {
   Query,
   Mutation,
-  //   Team,
+  Board,
 };
 export default resolvers;

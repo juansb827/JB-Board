@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { MouseEventHandler, forwardRef } from "react";
 import EmptySearch from "./empty-search";
 import EmptyFavorites from "./empty-favorites";
 import EmptyTeamBoards from "./empty-team-boards";
 import { useUserDashboardInfo } from "@/features/user/user.queries";
-import { useBoards } from "@/features/board/board.queries";
+import { useBoards, useCreateBoard } from "@/features/board/board.queries";
 import Image from "next/image";
 import {
   Table,
@@ -58,8 +58,14 @@ const BoardDropdown = () => {
   );
 };
 
-const SquarePlusButton = () => (
-  <Button variant="ghost" className="p-0">
+const SquarePlusButton = ({
+  disabled,
+  onClick,
+}: {
+  disabled: boolean;
+  onClick: MouseEventHandler;
+}) => (
+  <Button variant="ghost" className="p-0" disabled={disabled} onClick={onClick}>
     <div className="aspect-square w-10 h-10">
       <div className="bg-blue-600 h-full w-full rounded-md flex justify-center items-center hover:opacity-100 transition">
         <Plus className="text-white" />
@@ -87,10 +93,7 @@ const BoardTableRow = ({
       </TableCell>
       <TableCell className="h-10">
         <div className="">
-          <p className="font-semibold truncate ... ">
-            {board.title}
-            {board.title}
-          </p>
+          <p className="font-semibold truncate ... ">{board.title}</p>
           <p className="text-muted-foreground truncate ...">
             Modified by {lastEditor}, {lastUpdateAt}
           </p>
@@ -130,9 +133,20 @@ const BoardList = ({
 }: BoardListProps) => {
   // const { data: dashboardInfo } = useUserDashboardInfo();
   // console.log("List Team Component", dashboardInfo);
-  const { data, isLoading } = useBoards({ teamId: team.id });
+  const { data, isLoading: isQueryLoading } = useBoards({ teamId: team.id });
+  const { mutateAsync, mutate, isPending: isCreatePending } = useCreateBoard();
+  const isAnyLoading = isQueryLoading || isCreatePending;
 
-  if (isLoading) {
+  const handleCreate = async () => {
+    if (isCreatePending) {
+      return;
+    }
+    mutate({
+      teamId: team.id,
+    });
+  };
+
+  if (isQueryLoading) {
     return <div>Loading</div>;
   }
 
@@ -155,10 +169,16 @@ const BoardList = ({
       <TableHeader>
         <TableRow className="group hover:bg-inherit">
           <TableHead className="w-12 p-4 ">
-            <SquarePlusButton />
+            <SquarePlusButton onClick={handleCreate} disabled={isAnyLoading} />
           </TableHead>
           <TableHead>
-            <span className="group-hover:text-blue-800 transition cursor-pointer">
+            <span
+              onClick={handleCreate}
+              className={cn(
+                "group-hover:text-blue-800 transition cursor-pointer",
+                isAnyLoading && "cursor-not-allowed opacity-50"
+              )}
+            >
               New Board
             </span>
           </TableHead>

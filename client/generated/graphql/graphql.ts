@@ -40,7 +40,7 @@ export type BoardsFilterInput = {
 
 export type CreateBoardInput = {
   teamId: Scalars['ID']['input'];
-  title: Scalars['String']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateBoardResponse = {

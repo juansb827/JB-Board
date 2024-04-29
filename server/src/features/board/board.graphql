@@ -9,7 +9,7 @@ type Board {
 }
 
 input CreateBoardInput {
-  title: String!
+  title: String
   teamId: ID!
 }
 

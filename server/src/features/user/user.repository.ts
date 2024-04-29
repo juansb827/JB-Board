@@ -9,4 +9,12 @@ export class UserRepository {
       .where("id", "=", +id)
       .executeTakeFirstOrThrow();
   }
+
+  static async findByIdBatch(ids: [ID]) {
+    return (await getDb())
+      .selectFrom("User")
+      .selectAll()
+      .where("id", "in", ids)
+      .execute();
+  }
 }
