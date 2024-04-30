@@ -1,4 +1,5 @@
 - Features
+  - Show default team on load?
   - Dataloader
   - Crud for teams
   - Team Settings Page
@@ -7,6 +8,8 @@
   - UI when user has no teams
 - Technical
   - remove tsnode and nodemon
+  - optimize query invalidation on FE
+    - optimize create board, rn it invalidates all boards, instead of a single team
   - Generic CrudService/Repository/Resolver
   - UpdatedAT trigger
   - Prefetch on Server Components

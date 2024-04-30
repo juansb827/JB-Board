@@ -6,9 +6,11 @@ import { graphql } from "@generated/graphql/gql";
 import { useQuery } from "@tanstack/react-query";
 import request from "graphql-request";
 import { useUserDashboardInfo } from "@/features/user/user.queries";
+import { useDashboardStore } from "@/features/dashboard/dashboard.store";
 
 export const List = (props: {}) => {
   const { data, error, isFetching } = useUserDashboardInfo();
+  const { activeTeam, setActiveTeam } = useDashboardStore();
   const teams = data?.user.teams || [];
   // const teams = [
   //   {
@@ -40,7 +42,8 @@ export const List = (props: {}) => {
           id={team.id}
           name={team.name}
           imageUrl="/logoipsum-293.svg"
-          isActive={team.id === "9"}
+          isActive={team.id === activeTeam?.id}
+          onClick={() => setActiveTeam(team)}
         />
       ))}
     </ul>

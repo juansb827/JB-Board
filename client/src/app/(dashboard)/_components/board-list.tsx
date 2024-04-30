@@ -38,6 +38,7 @@ import { BoardsDocument, BoardsQuery } from "@generated/graphql/graphql";
 import { formatDistanceToNow } from "date-fns";
 import { junit } from "node:test/reporters";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDashboardStore } from "@/features/dashboard/dashboard.store";
 
 const BoardDropdown = () => {
   return (
@@ -211,6 +212,7 @@ const BoardList = ({
   // const { data: dashboardInfo } = useUserDashboardInfo();
   // console.log("List Team Component", dashboardInfo);
   const result = useBoards({ teamId: team.id });
+
   const { data, isLoading: isQueryLoading } = result;
 
   if (isQueryLoading) {

@@ -6,9 +6,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDashboardStore } from "@/features/dashboard/dashboard.store";
 import { LogOut, Settings } from "lucide-react";
 import Image from "next/image";
 export const TeamDropdown = () => {
+  const { activeTeam } = useDashboardStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -16,7 +18,7 @@ export const TeamDropdown = () => {
           <div className="rounded-lg relative w-12 h-12 bg-gray-100 ">
             <Image fill alt="logo" src={"/logoipsum-247.svg"} className="p-2" />
           </div>
-          <span>Team Name</span>
+          <span>{activeTeam?.name}</span>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48">

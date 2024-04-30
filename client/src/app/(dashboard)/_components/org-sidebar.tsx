@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import { TeamDropdown } from "./team-dropdown";
+import { useDashboardStore } from "@/features/dashboard/dashboard.store";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -16,22 +17,12 @@ const font = Poppins({
 });
 
 const OrgSidebar = () => {
+  const { activeTeam } = useDashboardStore();
   const searchParams = useSearchParams();
   const favorites = searchParams.get("favorites");
 
-  return (
-    <div className="hidden lg:flex flex-col space-y-6 w-52 pl-5 pt-5">
-      {/* Header */}
-      <Link href={"/"}>
-        <div className="flex gap-x-3 items-center">
-          <div className="rounded-lg relative w-16 h-16 bg-yellow-300">
-            <Image fill alt="logo" src={"/logoipsum-280.svg"} className="p-2" />
-          </div>
-          <span className={cn("font-semibold text-2xl", font.className)}>
-            Boards
-          </span>
-        </div>
-      </Link>
+  const TeamMenu = () => (
+    <>
       {/* Team Name */}
       <TeamDropdown />
       {/* Others */}
@@ -70,6 +61,23 @@ const OrgSidebar = () => {
           </Link>
         </Button>
       </div>
+    </>
+  );
+
+  return (
+    <div className="hidden lg:flex flex-col space-y-6 w-52 pl-5 pt-5">
+      {/* Header */}
+      <Link href={"/"}>
+        <div className="flex gap-x-3 items-center">
+          <div className="rounded-lg relative w-16 h-16 bg-yellow-300">
+            <Image fill alt="logo" src={"/logoipsum-280.svg"} className="p-2" />
+          </div>
+          <span className={cn("font-semibold text-2xl", font.className)}>
+            Boards
+          </span>
+        </div>
+      </Link>
+      {activeTeam && <TeamMenu />}
     </div>
   );
 };
