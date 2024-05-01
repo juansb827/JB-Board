@@ -44,17 +44,17 @@ export const useCreateBoard = () => {
     onError: () => {
       toast.error("Error creating board", {});
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       toast.success("Board created", {});
       // todo invalidate type
-      queryClient.invalidateQueries({ queryKey: ["boards"] });
+      queryClient.invalidateQueries({ queryKey: ["boards", variables.teamId] });
     },
   });
 };
 
 export const useBoards = (filter: BoardsFilterInput) => {
   return useQuery({
-    queryKey: ["boards", filter],
+    queryKey: ["boards", filter.teamId, filter],
     queryFn: () => graphQLClient.request(boardsDocument, { filter }),
   });
 };

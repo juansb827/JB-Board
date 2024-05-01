@@ -10,7 +10,7 @@ export class UserRepository {
       .executeTakeFirstOrThrow();
   }
 
-  static async findByIdBatch(ids: [ID]) {
+  static async findByIdBatch(ids: readonly ID[]) {
     return (await getDb())
       .selectFrom("User")
       .selectAll()

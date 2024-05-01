@@ -1,11 +1,14 @@
+import { BoardResponse } from "@generated/graphql/graphql.generated";
 import { FeaturesModule } from "../generated-types/module-types";
 import { BoardService } from "./board.service";
+import { Board } from "@generated/db/types.generated";
 
 const Query: FeaturesModule.QueryResolvers = {
   boards: async (parent, args, ctx) => {
-    return {
+    const res = {
       nodes: await BoardService.findAll(args.filter),
     };
+    return res;
   },
 };
 const Mutation: FeaturesModule.MutationResolvers = {
@@ -19,8 +22,8 @@ const Board: FeaturesModule.BoardResolvers = {
     return parent.imageUrl || "https://placehold.co/512x512";
   },
   title: (parent) => parent.title || "Untitled",
-  author: (parent) => {
-    return BoardService.loadAuthor(parent);
+  author: (parent, args, ctx) => {
+    return BoardService.loadAuthor(ctx, parent);
   },
 };
 

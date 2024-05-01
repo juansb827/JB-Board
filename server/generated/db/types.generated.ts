@@ -51,7 +51,7 @@ export type TeamUser = {
 export type User = {
     id: Generated<string | number>;
     email: string;
-    name: string | null;
+    name: string;
 };
 export type DB = {
     Board: Board;

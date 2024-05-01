@@ -2,9 +2,12 @@ import {
   Board,
   BoardsFilterInput,
   CreateBoardInput,
+  User,
 } from "@generated/graphql/graphql.generated";
 import { BoardRepository } from "./board.repository";
 import { UserRepository } from "../user/user.repository";
+import DataLoader from "dataloader";
+import { GqlContext, ID, Resolved } from "@/shared/types";
 
 const boardImagePlaceholders = [
   "/board-placeholders/image1.png",
@@ -31,7 +34,16 @@ export class BoardService {
     });
   }
 
-  static async loadAuthor(parent: Board) {
-    return (await UserRepository.findByIdBatch([1 + (+parent.id % 2)]))[0];
+  static async loadAuthor(ctx: GqlContext, parent: Board) {
+    const loader = ctx.getOrCreateLoader("users:byId", () => {
+      const userLoader = new DataLoader<ID, Resolved<User>>(async (ids) => {
+        const users: Array<Resolved<User>> = await UserRepository.findByIdBatch(
+          ids
+        );
+        return users;
+      });
+      return userLoader;
+    });
+    return loader.load(1 + (+parent.id % 2));
   }
 }

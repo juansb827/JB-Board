@@ -1,5 +1,5 @@
 /* eslint-disable */
-              type DeepPartial<T> = { [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P] } 
+          import { DeepPartial, JSDate } from "@/shared/types";
             
 import * as Types from "@generated/graphql/graphql.generated";
 export namespace SchemaModule {

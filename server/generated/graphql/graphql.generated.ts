@@ -1,5 +1,5 @@
 /* eslint-disable */
-              type DeepPartial<T> = { [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P] } 
+          import { DeepPartial, JSDate } from "@/shared/types";
             
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
@@ -17,7 +17,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Date: { input: any; output: any; }
+  Date: { input: string; output: string | JSDate; }
   Url: { input: any; output: any; }
 };
 
@@ -190,7 +190,7 @@ export type User = {
 
 
 
-export type ResolverTypeWrapper<T> = T | Promise<T> | DeepPartial<T> | Promise<DeepPartial<T>>;
+export type ResolverTypeWrapper<T> = DeepPartial<T>;
 
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {

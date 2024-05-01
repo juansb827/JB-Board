@@ -16,9 +16,11 @@ const config: CodegenConfig = {
       config: {
         scalars: {
           ID: "string | number",
+          Date: { input: "string", output: "string | JSDate" },
         },
         resolverTypeWrapperSignature:
-          "T | Promise<T> | DeepPartial<T> | Promise<DeepPartial<T>>", // allow for partial resolving (useful for field level resolving)
+          //"T | Promise<T> | DeepPartial<T> | Promise<DeepPartial<T>>", // allow for partial resolving (useful for field level resolving)
+          "DeepPartial<T>", // allow for partial resolving (useful for field level resolving)
       },
       presetConfig: {
         baseTypesPath: "../generated/graphql/graphql.generated.ts",
@@ -30,7 +32,7 @@ const config: CodegenConfig = {
         {
           add: {
             content: `/* eslint-disable */
-              type DeepPartial<T> = { [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P] } 
+          import { DeepPartial, JSDate } from "@/shared/types";
             `,
           },
         },

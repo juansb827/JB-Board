@@ -1,10 +1,11 @@
 - Features
+  - COdegen COntexet Type
   - Show default team on load?
   - Dataloader
   - Crud for teams
   - Team Settings Page
   - Team leave
-  - Invite to team
+  - Invite to team{ id: string; name: string }
   - UI when user has no teams
 - Technical
   - remove tsnode and nodemon
