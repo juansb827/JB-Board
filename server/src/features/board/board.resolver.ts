@@ -15,6 +15,10 @@ const Mutation: FeaturesModule.MutationResolvers = {
   createBoard: async (parent, args, ctx) => {
     return { board: await BoardService.create(args.input) };
   },
+  deleteBoard: async (parent, args, ctx) => {
+    await BoardService.delete(args.input);
+    return true;
+  },
 };
 
 const Board: FeaturesModule.BoardResolvers = {

@@ -60,6 +60,10 @@ export type CreateTeamResponse = {
   team: Team;
 };
 
+export type DeleteBoardInput = {
+  id: Scalars['ID']['input'];
+};
+
 export type Meta = {
   __typename?: 'Meta';
   count?: Maybe<Scalars['Int']['output']>;
@@ -71,6 +75,7 @@ export type Mutation = {
   createTeam?: Maybe<CreateTeamResponse>;
   createTweet?: Maybe<Tweet>;
   createUser: User;
+  deleteBoard: Scalars['Boolean']['output'];
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -93,6 +98,11 @@ export type MutationCreateTweetArgs = {
 
 export type MutationCreateUserArgs = {
   input?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationDeleteBoardArgs = {
+  input: DeleteBoardInput;
 };
 
 
@@ -268,6 +278,7 @@ export type ResolversTypes = {
   CreateTeamInput: CreateTeamInput;
   CreateTeamResponse: ResolverTypeWrapper<CreateTeamResponse>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
+  DeleteBoardInput: DeleteBoardInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Meta: ResolverTypeWrapper<Meta>;
@@ -294,6 +305,7 @@ export type ResolversParentTypes = {
   CreateTeamInput: CreateTeamInput;
   CreateTeamResponse: CreateTeamResponse;
   Date: Scalars['Date']['output'];
+  DeleteBoardInput: DeleteBoardInput;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Meta: Meta;
@@ -349,6 +361,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createTeam?: Resolver<Maybe<ResolversTypes['CreateTeamResponse']>, ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'input'>>;
   createTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, Partial<MutationCreateTweetArgs>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationCreateUserArgs>>;
+  deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'input'>>;
   deleteTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   markTweetRead?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMarkTweetReadArgs, 'id'>>;
 };

@@ -2,6 +2,7 @@ import {
   Board,
   BoardsFilterInput,
   CreateBoardInput,
+  DeleteBoardInput,
   User,
 } from "@generated/graphql/graphql.generated";
 import { BoardRepository } from "./board.repository";
@@ -32,6 +33,13 @@ export class BoardService {
         imageUrl: boardImagePlaceholders[randomImageIdx],
       },
     });
+  }
+
+  static async delete(input: DeleteBoardInput) {
+    const result = await BoardRepository.delete({ ...input, userId: 1 });
+    if (result.numDeletedRows.toString() === "0") {
+      throw new Error("COULD NOT DELETE BOARD");
+    }
   }
 
   static async loadAuthor(ctx: GqlContext, parent: Board) {

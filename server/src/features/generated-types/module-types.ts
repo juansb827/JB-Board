@@ -8,7 +8,7 @@ export namespace FeaturesModule {
     CreateBoardResponse: 'board';
     BoardResponse: 'nodes';
     Query: 'boards' | 'team' | 'teams' | 'user';
-    Mutation: 'createBoard' | 'createTeam' | 'createUser';
+    Mutation: 'createBoard' | 'deleteBoard' | 'createTeam' | 'createUser';
     Team: 'id' | 'name' | 'extra';
     PaginatedTeam: 'nodes';
     CreateTeamResponse: 'team';
@@ -17,6 +17,7 @@ export namespace FeaturesModule {
   
   interface DefinedInputFields {
     CreateBoardInput: 'title' | 'teamId';
+    DeleteBoardInput: 'id';
     BoardsFilterInput: 'teamId';
     CreateTeamInput: 'name';
   };
@@ -26,6 +27,7 @@ export namespace FeaturesModule {
   export type User = Pick<Types.User, DefinedFields['User']>;
   export type Team = Pick<Types.Team, DefinedFields['Team']>;
   export type CreateBoardInput = Pick<Types.CreateBoardInput, DefinedInputFields['CreateBoardInput']>;
+  export type DeleteBoardInput = Pick<Types.DeleteBoardInput, DefinedInputFields['DeleteBoardInput']>;
   export type CreateBoardResponse = Pick<Types.CreateBoardResponse, DefinedFields['CreateBoardResponse']>;
   export type BoardsFilterInput = Pick<Types.BoardsFilterInput, DefinedInputFields['BoardsFilterInput']>;
   export type BoardResponse = Pick<Types.BoardResponse, DefinedFields['BoardResponse']>;
