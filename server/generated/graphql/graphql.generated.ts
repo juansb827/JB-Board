@@ -27,6 +27,7 @@ export type Board = {
   createdAt: Scalars['Date']['output'];
   id: Scalars['ID']['output'];
   imageUrl: Scalars['String']['output'];
+  isFavorite: Scalars['Boolean']['output'];
   team: Team;
   title: Scalars['String']['output'];
   updatedAt: Scalars['Date']['output'];
@@ -80,7 +81,7 @@ export type Mutation = {
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
   renameBoard: RenameBoardResponse;
-  updateBoardIsFavorite: Scalars['Boolean']['output'];
+  updateBoardIsFavorite: UpdateBoardIsFavoriteResponse;
 };
 
 
@@ -220,6 +221,11 @@ export type UpdateBoardIsFavoriteInput = {
   teamId: Scalars['ID']['input'];
 };
 
+export type UpdateBoardIsFavoriteResponse = {
+  __typename?: 'UpdateBoardIsFavoriteResponse';
+  isFavorite: Scalars['Boolean']['output'];
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
@@ -323,6 +329,7 @@ export type ResolversTypes = {
   Team: ResolverTypeWrapper<Team>;
   Tweet: ResolverTypeWrapper<Tweet>;
   UpdateBoardIsFavoriteInput: UpdateBoardIsFavoriteInput;
+  UpdateBoardIsFavoriteResponse: ResolverTypeWrapper<UpdateBoardIsFavoriteResponse>;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
   User: ResolverTypeWrapper<User>;
 };
@@ -353,6 +360,7 @@ export type ResolversParentTypes = {
   Team: Team;
   Tweet: Tweet;
   UpdateBoardIsFavoriteInput: UpdateBoardIsFavoriteInput;
+  UpdateBoardIsFavoriteResponse: UpdateBoardIsFavoriteResponse;
   Url: Scalars['Url']['output'];
   User: User;
 };
@@ -362,6 +370,7 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isFavorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   team?: Resolver<ResolversTypes['Team'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
@@ -401,7 +410,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   markTweetRead?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMarkTweetReadArgs, 'id'>>;
   renameBoard?: Resolver<ResolversTypes['RenameBoardResponse'], ParentType, ContextType, RequireFields<MutationRenameBoardArgs, 'input'>>;
-  updateBoardIsFavorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateBoardIsFavoriteArgs, 'input'>>;
+  updateBoardIsFavorite?: Resolver<ResolversTypes['UpdateBoardIsFavoriteResponse'], ParentType, ContextType, RequireFields<MutationUpdateBoardIsFavoriteArgs, 'input'>>;
 };
 
 export type NotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Notification'] = ResolversParentTypes['Notification']> = {
@@ -455,6 +464,11 @@ export type TweetResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateBoardIsFavoriteResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateBoardIsFavoriteResponse'] = ResolversParentTypes['UpdateBoardIsFavoriteResponse']> = {
+  isFavorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Url'], any> {
   name: 'Url';
 }
@@ -482,6 +496,7 @@ export type Resolvers<ContextType = any> = {
   Stat?: StatResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;
   Tweet?: TweetResolvers<ContextType>;
+  UpdateBoardIsFavoriteResponse?: UpdateBoardIsFavoriteResponseResolvers<ContextType>;
   Url?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
 };

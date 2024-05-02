@@ -1,4 +1,5 @@
 - Features
+  - load board author and lastEditor on FE
   - make Team name non unique
   - COdegen COntexet Type
   - Show default team on load?

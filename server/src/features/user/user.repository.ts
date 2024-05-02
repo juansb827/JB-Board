@@ -21,7 +21,7 @@ export class UserRepository {
   }
 
   /**
-   * Returns the teamId if the user is associated with the team
+   * SQL expression that returns the teamId if the user is associated with the team
    */
   static userBelongsToTeam(userId: ID, teamId: ID) {
     // Using this syntax so that the query builder using this expression can be of any type

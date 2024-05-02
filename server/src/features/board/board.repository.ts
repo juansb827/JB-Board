@@ -31,8 +31,11 @@ export class BoardRepository {
       .insertInto("Board")
       .values(({ eb, ref, selectFrom, fn }) => ({
         ...board,
-        // Will fail if user is not associated with the team
-        teamId: UserRepository.userBelongsToTeam(board.authorId, board.teamId),
+        teamId: fn.coalesce(
+          UserRepository.userBelongsToTeam(board.authorId, board.teamId),
+          // default to  -1 to make this error out if the condition is null
+          eb.val(-1)
+        ),
       }))
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -40,6 +43,7 @@ export class BoardRepository {
 
   static async delete(args: { userId: ID; teamId: ID; id: ID }) {
     const db = await getDb();
+    // TODO: delete user team
     return db
       .deleteFrom("Board")
       .where("id", "=", args.id)
@@ -87,6 +91,7 @@ export class BoardRepository {
           ...userBoard,
         })
       )
+      .returningAll()
       .executeTakeFirstOrThrow();
     // .where("teamId", "=", args.teamId)
     // .where((eb) =>
@@ -112,6 +117,21 @@ export class BoardRepository {
       )
       .returningAll()
       .executeTakeFirstOrThrow();
+  }
+
+  static async findUserBoardBatch({
+    userId,
+    boardIds,
+  }: {
+    userId: ID;
+    boardIds: readonly ID[];
+  }) {
+    return (await getDb())
+      .selectFrom("UserBoard")
+      .selectAll()
+      .where("UserBoard.userId", "=", userId)
+      .where("UserBoard.boardId", "in", boardIds)
+      .execute();
   }
 
   /**

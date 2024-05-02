@@ -9,6 +9,7 @@ import {
   useCreateBoard,
   useDeleteBoard,
   useRenameBoard,
+  useUpdateBoardIsFavorite,
 } from "@/features/board/board.queries";
 import Image from "next/image";
 import {
@@ -211,7 +212,9 @@ const BoardDropdown = ({
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Ellipsis className="text-gray-400 hover:text-black transition" />
+          <Button variant="ghost" className="p-0 hover:bg-transparent">
+            <Ellipsis className="text-gray-400 hover:text-black transition" />
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuItem onClick={() => setOpenRenameDialog(true)}>
@@ -267,11 +270,23 @@ const BoardTableRow = ({
     id: string;
   };
 }) => {
+  const currentUserId = "1";
   const author = board.author.name;
-  const lastEditor = board.author.name; // TODO: fix
+  const lastEditor =
+    board.author.id === currentUserId ? "You" : board.author.name; // TODO: fix
   const lastUpdateAt = formatDistanceToNow(board.updatedAt, {
     addSuffix: true,
   });
+
+  const { mutate, isPending } = useUpdateBoardIsFavorite();
+  const handleToggleFavorite = () => {
+    mutate({
+      isFavorite: !board.isFavorite,
+      id: board.id,
+      teamId: team.id,
+    });
+  };
+
   return (
     <TableRow key={board.id}>
       <TableCell>
@@ -289,14 +304,21 @@ const BoardTableRow = ({
       </TableCell>
       <TableCell className="hidden sm:table-cell">{author}</TableCell>
       <TableCell className="flex justify-center">
-        <Star
-          // fill="rgb(30 64 175)"
-          // className="text-gray-500 hover:text-blue-800 "
-          className={cn([
-            "text-gray-300 hover:text-blue-800 transition",
-            +board.id % 2 === 1 && "text-blue-800 fill-blue-800",
-          ])}
-        />
+        <Button
+          disabled={isPending}
+          variant="ghost"
+          className="hover:bg-transparent"
+          onClick={handleToggleFavorite}
+        >
+          <Star
+            // fill="rgb(30 64 175)"
+            // className="text-gray-500 hover:text-blue-800 "
+            className={cn([
+              "text-gray-300 hover:text-blue-800 transition",
+              (board as any).isFavorite && "text-blue-800 fill-blue-800",
+            ])}
+          />
+        </Button>
       </TableCell>
       <TableCell>
         <BoardDropdown board={board} team={team} />
@@ -336,15 +358,16 @@ const BoardTable = (props: BoardTableProps) => {
             <SquarePlusButton onClick={handleCreate} disabled={isAnyLoading} />
           </TableHead>
           <TableHead>
-            <span
-              onClick={handleCreate}
-              className={cn(
-                "group-hover:text-blue-800 transition cursor-pointer",
-                isAnyLoading && "cursor-not-allowed opacity-50"
-              )}
-            >
-              New Board
-            </span>
+            <Button variant="ghost" disabled={isAnyLoading}>
+              <span
+                onClick={handleCreate}
+                className={cn(
+                  "group-hover:text-blue-800 transition cursor-pointer"
+                )}
+              >
+                New Board
+              </span>
+            </Button>
           </TableHead>
           <TableHead className="hidden sm:table-cell">
             <span>Owner</span>

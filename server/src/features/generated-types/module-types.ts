@@ -4,10 +4,11 @@
 import * as Types from "@generated/graphql/graphql.generated";
 export namespace FeaturesModule {
   interface DefinedFields {
-    Board: 'id' | 'createdAt' | 'updatedAt' | 'title' | 'author' | 'team' | 'imageUrl';
+    Board: 'id' | 'createdAt' | 'updatedAt' | 'title' | 'author' | 'team' | 'imageUrl' | 'isFavorite';
     CreateBoardResponse: 'board';
     RenameBoardResponse: 'board';
     BoardResponse: 'nodes';
+    UpdateBoardIsFavoriteResponse: 'isFavorite';
     Query: 'boards' | 'team' | 'teams' | 'user';
     Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'updateBoardIsFavorite' | 'createTeam' | 'createUser';
     Team: 'id' | 'name' | 'extra';
@@ -37,6 +38,7 @@ export namespace FeaturesModule {
   export type BoardsFilterInput = Pick<Types.BoardsFilterInput, DefinedInputFields['BoardsFilterInput']>;
   export type BoardResponse = Pick<Types.BoardResponse, DefinedFields['BoardResponse']>;
   export type UpdateBoardIsFavoriteInput = Pick<Types.UpdateBoardIsFavoriteInput, DefinedInputFields['UpdateBoardIsFavoriteInput']>;
+  export type UpdateBoardIsFavoriteResponse = Pick<Types.UpdateBoardIsFavoriteResponse, DefinedFields['UpdateBoardIsFavoriteResponse']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
   export type PaginatedTeam = Pick<Types.PaginatedTeam, DefinedFields['PaginatedTeam']>;
@@ -47,6 +49,7 @@ export namespace FeaturesModule {
   export type CreateBoardResponseResolvers = Pick<Types.CreateBoardResponseResolvers, DefinedFields['CreateBoardResponse'] | '__isTypeOf'>;
   export type RenameBoardResponseResolvers = Pick<Types.RenameBoardResponseResolvers, DefinedFields['RenameBoardResponse'] | '__isTypeOf'>;
   export type BoardResponseResolvers = Pick<Types.BoardResponseResolvers, DefinedFields['BoardResponse'] | '__isTypeOf'>;
+  export type UpdateBoardIsFavoriteResponseResolvers = Pick<Types.UpdateBoardIsFavoriteResponseResolvers, DefinedFields['UpdateBoardIsFavoriteResponse'] | '__isTypeOf'>;
   export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
   export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
   export type TeamResolvers = Pick<Types.TeamResolvers, DefinedFields['Team'] | '__isTypeOf'>;
@@ -59,6 +62,7 @@ export namespace FeaturesModule {
     CreateBoardResponse?: CreateBoardResponseResolvers;
     RenameBoardResponse?: RenameBoardResponseResolvers;
     BoardResponse?: BoardResponseResolvers;
+    UpdateBoardIsFavoriteResponse?: UpdateBoardIsFavoriteResponseResolvers;
     Query?: QueryResolvers;
     Mutation?: MutationResolvers;
     Team?: TeamResolvers;

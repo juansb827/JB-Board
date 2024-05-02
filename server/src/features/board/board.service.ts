@@ -11,6 +11,10 @@ import { BoardRepository } from "./board.repository";
 import { UserRepository } from "../user/user.repository";
 import DataLoader from "dataloader";
 import { GqlContext, ID, Resolved } from "@/shared/types";
+import { UserBoard } from "@generated/db/types.generated";
+import { Selectable } from "kysely";
+import _ from "lodash";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const boardImagePlaceholders = [
   "/board-placeholders/image1.png",
@@ -63,15 +67,37 @@ export class BoardService {
     });
   }
   static async loadAuthor(ctx: GqlContext, parent: Board) {
-    const loader = ctx.getOrCreateLoader("users:byId", () => {
+    const loader = ctx.getOrCreateLoader("User:byId", () => {
       const userLoader = new DataLoader<ID, Resolved<User>>(async (ids) => {
         const users: Array<Resolved<User>> = await UserRepository.findByIdBatch(
           ids
         );
-        return users;
+        const idToUser = _.keyBy(users, (u) => u.id);
+        return ids.map((id) => idToUser[id]);
       });
       return userLoader;
     });
     return loader.load(1 + (+parent.id % 2));
+  }
+
+  static async loadIsFavorite(ctx: GqlContext, parent: Board) {
+    const userId = 1;
+    const loader = ctx.getOrCreateLoader(`UserBoard:byBoardId`, () => {
+      const userLoader = new DataLoader<ID, Maybe<Selectable<UserBoard>>>(
+        async (boardIds) => {
+          const userBoardAssociations: Array<Selectable<UserBoard>> =
+            await BoardRepository.findUserBoardBatch({ userId, boardIds });
+          const idToUserBoardAssociation = _.keyBy(
+            userBoardAssociations,
+            (it) => it.boardId
+          );
+          return boardIds.map((id) => idToUserBoardAssociation[id]);
+        }
+      );
+      return userLoader;
+    });
+
+    const userBoardAssociation = await loader.load(parent.id);
+    return userBoardAssociation?.isFavorite || false;
   }
 }

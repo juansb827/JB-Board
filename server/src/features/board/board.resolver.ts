@@ -23,8 +23,7 @@ const Mutation: FeaturesModule.MutationResolvers = {
     return { board: await BoardService.rename(args.input) };
   },
   updateBoardIsFavorite: async (parent, args, ctx) => {
-    await BoardService.updateIsFavorite(args.input);
-    return true;
+    return BoardService.updateIsFavorite(args.input);
   },
 };
 
@@ -35,6 +34,9 @@ const Board: FeaturesModule.BoardResolvers = {
   title: (parent) => parent.title || "Untitled",
   author: (parent, args, ctx) => {
     return BoardService.loadAuthor(ctx, parent);
+  },
+  isFavorite: (parent, args, ctx) => {
+    return BoardService.loadIsFavorite(ctx, parent);
   },
 };
 

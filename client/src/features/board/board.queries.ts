@@ -6,6 +6,7 @@ import {
   CreateBoardInput,
   DeleteBoardInput,
   RenameBoardInput,
+  UpdateBoardIsFavoriteInput,
 } from "@generated/graphql/graphql";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Maybe } from "graphql/jsutils/Maybe";
@@ -53,7 +54,16 @@ const boardsDocument = graphql(`
           id
           name
         }
+        isFavorite
       }
+    }
+  }
+`);
+
+const updateBoardIsFavoriteDocument = graphql(`
+  mutation updateBoardIsFavorite($input: UpdateBoardIsFavoriteInput!) {
+    updateBoardIsFavorite(input: $input) {
+      isFavorite
     }
   }
 `);
@@ -128,6 +138,34 @@ export const useDeleteBoard = () => {
   });
 };
 
+export const useUpdateBoardIsFavorite = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: UpdateBoardIsFavoriteInput) => {
+      return graphQLClient.request(updateBoardIsFavoriteDocument, { input });
+    },
+    onError: () => {},
+    onSuccess: (data, variables) => {
+      queryClient.setQueriesData(
+        { queryKey: ["boards", variables.teamId] },
+        (oldData: BoardsQuery["boards"]["nodes"] | undefined) => {
+          if (!oldData) {
+            return;
+          }
+          return oldData.map((board) => {
+            if (board.id !== variables.id) {
+              return board;
+            }
+            return {
+              ...board,
+              isFavorite: data.updateBoardIsFavorite.isFavorite,
+            };
+          });
+        }
+      );
+    },
+  });
+};
 export const useBoards = (filter: BoardsFilterInput) => {
   return useQuery({
     queryKey: ["boards", filter.teamId, filter],
