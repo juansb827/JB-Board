@@ -15,6 +15,7 @@ input CreateBoardInput {
 
 input DeleteBoardInput {
   id: ID!
+  teamId: ID!
 }
 
 type CreateBoardResponse {

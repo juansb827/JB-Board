@@ -17,7 +17,7 @@ export namespace FeaturesModule {
   
   interface DefinedInputFields {
     CreateBoardInput: 'title' | 'teamId';
-    DeleteBoardInput: 'id';
+    DeleteBoardInput: 'id' | 'teamId';
     BoardsFilterInput: 'teamId';
     CreateTeamInput: 'name';
   };

@@ -62,6 +62,7 @@ export type CreateTeamResponse = {
 
 export type DeleteBoardInput = {
   id: Scalars['ID']['input'];
+  teamId: Scalars['ID']['input'];
 };
 
 export type Meta = {
