@@ -392,7 +392,7 @@ const BoardList = ({
   }
 
   if (!boards) {
-    return <div>Error</div>;
+    return <div></div>;
   }
 
   if (!boards?.length) {

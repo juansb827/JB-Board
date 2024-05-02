@@ -80,6 +80,7 @@ export type Mutation = {
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
   renameBoard: RenameBoardResponse;
+  updateBoardIsFavorite: Scalars['Boolean']['output'];
 };
 
 
@@ -120,6 +121,11 @@ export type MutationMarkTweetReadArgs = {
 
 export type MutationRenameBoardArgs = {
   input: RenameBoardInput;
+};
+
+
+export type MutationUpdateBoardIsFavoriteArgs = {
+  input: UpdateBoardIsFavoriteInput;
 };
 
 export type Notification = {
@@ -206,6 +212,12 @@ export type Tweet = {
   body?: Maybe<Scalars['String']['output']>;
   date?: Maybe<Scalars['Date']['output']>;
   id: Scalars['ID']['output'];
+};
+
+export type UpdateBoardIsFavoriteInput = {
+  id: Scalars['ID']['input'];
+  isFavorite: Scalars['Boolean']['input'];
+  teamId: Scalars['ID']['input'];
 };
 
 export type User = {
@@ -310,6 +322,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Team: ResolverTypeWrapper<Team>;
   Tweet: ResolverTypeWrapper<Tweet>;
+  UpdateBoardIsFavoriteInput: UpdateBoardIsFavoriteInput;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
   User: ResolverTypeWrapper<User>;
 };
@@ -339,6 +352,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']['output'];
   Team: Team;
   Tweet: Tweet;
+  UpdateBoardIsFavoriteInput: UpdateBoardIsFavoriteInput;
   Url: Scalars['Url']['output'];
   User: User;
 };
@@ -387,6 +401,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   markTweetRead?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMarkTweetReadArgs, 'id'>>;
   renameBoard?: Resolver<ResolversTypes['RenameBoardResponse'], ParentType, ContextType, RequireFields<MutationRenameBoardArgs, 'input'>>;
+  updateBoardIsFavorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateBoardIsFavoriteArgs, 'input'>>;
 };
 
 export type NotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Notification'] = ResolversParentTypes['Notification']> = {

@@ -40,6 +40,16 @@ type BoardResponse {
   nodes: [Board!]!
 }
 
+input UpdateBoardIsFavoriteInput {
+  id: ID!
+  teamId: ID!
+  isFavorite: Boolean!
+}
+
+# type UpdateBoardIsFavoriteResponse {
+#   board: Board!
+# }
+
 type Query {
   boards(filter: BoardsFilterInput!): BoardResponse!
 }
@@ -48,4 +58,5 @@ type Mutation {
   createBoard(input: CreateBoardInput!): CreateBoardResponse!
   deleteBoard(input: DeleteBoardInput!): Boolean!
   renameBoard(input: RenameBoardInput!): RenameBoardResponse!
+  updateBoardIsFavorite(input: UpdateBoardIsFavoriteInput!): Boolean!
 }

@@ -1,7 +1,7 @@
 import { getDb } from "@/core/database";
 import { ID } from "@/shared/types";
 import { DB } from "@generated/db/types.generated";
-import { expressionBuilder } from "kysely";
+import { SelectExpression, expressionBuilder } from "kysely";
 
 export class UserRepository {
   static async findOne(id: ID) {
@@ -20,6 +20,9 @@ export class UserRepository {
       .execute();
   }
 
+  /**
+   * Returns the teamId if the user is associated with the team
+   */
   static userBelongsToTeam(userId: ID, teamId: ID) {
     // Using this syntax so that the query builder using this expression can be of any type
     // not just "User"

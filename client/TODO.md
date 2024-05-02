@@ -1,4 +1,5 @@
 - Features
+  - make Team name non unique
   - COdegen COntexet Type
   - Show default team on load?
   - Dataloader
@@ -7,6 +8,7 @@
   - Team leave
   - Invite to team{ id: string; name: string }
   - UI when user has no teams
+  - Show Generic Saving.../Save Toast
 - Technical
   - remove tsnode and nodemon
   - optimize query invalidation on FE

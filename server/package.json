@@ -12,7 +12,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "//prisma:models:generate": "echo 'This only generates the kysely models'",
     "prisma:models:generate": "prisma generate",
+    "//prisma:migration:generate": "echo 'This only generates sql migrations'",
     "prisma:migration:generate": "prisma migrate dev --create-only",
+    "//prisma:migration:run": "echo 'generate both kysely and sql migrations and then apply the migrations'",
     "prisma:migration:run": "prisma migrate dev",
     "graphql:generate": "graphql-codegen",
     "graphql:generate:watch": "graphql-codegen --watch src/**/*.graphql"

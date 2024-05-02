@@ -53,6 +53,12 @@ export type User = {
     email: string;
     name: string;
 };
+export type UserBoard = {
+    userId: string | number;
+    boardId: string | number;
+    createdAt: Generated<Timestamp>;
+    isFavorite: boolean;
+};
 export type DB = {
     Board: Board;
     Comment: Comment;
@@ -61,4 +67,5 @@ export type DB = {
     Team: Team;
     TeamUser: TeamUser;
     User: User;
+    UserBoard: UserBoard;
 };

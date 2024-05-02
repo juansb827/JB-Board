@@ -12,10 +12,10 @@ generator client {
 
   // Optionally provide a destination directory for the generated file
   // and a filename of your choice
-  output       = "../generated/db"
-  fileName     = "types.generated.ts"
+  output          = "../generated/db"
+  fileName        = "types.generated.ts"
   // Optionally generate runtime enums to a separate file
-  enumFileName = "enums.ts"
+  enumFileName    = "enums.ts"
   intTypeOverride = "string | number"
 }
 
@@ -55,13 +55,14 @@ model Profile {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  name     String
-  posts    Post[]
-  profile  Profile?
-  teams    TeamUser[]
-  boards   Board[]
+  id               Int         @id @default(autoincrement())
+  email            String      @unique
+  name             String
+  posts            Post[]
+  profile          Profile?
+  teams            TeamUser[]
+  createdBoards    Board[]     @relation("createdBoards")
+  associatedBoards UserBoard[] @relation("associatedBoards")
 }
 
 model Team {
@@ -70,28 +71,40 @@ model Team {
   updatedAt DateTime   @updatedAt
   deletedAt DateTime?
   name      String     @unique
-  users  TeamUser[]
-  boards   Board[]
+  users     TeamUser[]
+  boards    Board[]
 }
 
 model TeamUser {
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-  team   Team @relation(fields: [teamId], references: [id])
-  teamId Int
-  createdAt DateTime   @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    Int
+  createdAt DateTime @default(now())
+
   @@id([teamId, userId])
 }
 
 model Board {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  deletedAt DateTime?
-  title      String     
-  author User @relation(fields: [authorId], references: [id])
-  authorId Int
-  team Team @relation(fields: [teamId], references: [id])
-  teamId Int
-  imageUrl String
+  id              Int         @id @default(autoincrement())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  deletedAt       DateTime?
+  title           String
+  author          User        @relation("createdBoards", fields: [authorId], references: [id])
+  authorId        Int
+  team            Team        @relation(fields: [teamId], references: [id])
+  teamId          Int
+  imageUrl        String
+  associatedUsers UserBoard[] @relation("associatedUsers")
+}
+
+model UserBoard {
+  user      User     @relation("associatedBoards", fields: [userId], references: [id])
+  userId    Int
+  board     Board    @relation("associatedUsers", fields: [boardId], references: [id])
+  boardId   Int
+  createdAt DateTime @default(now())
+  isFavorite Boolean 
+  @@id([userId, boardId])
 }

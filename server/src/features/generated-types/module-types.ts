@@ -9,7 +9,7 @@ export namespace FeaturesModule {
     RenameBoardResponse: 'board';
     BoardResponse: 'nodes';
     Query: 'boards' | 'team' | 'teams' | 'user';
-    Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'createTeam' | 'createUser';
+    Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'updateBoardIsFavorite' | 'createTeam' | 'createUser';
     Team: 'id' | 'name' | 'extra';
     PaginatedTeam: 'nodes';
     CreateTeamResponse: 'team';
@@ -21,6 +21,7 @@ export namespace FeaturesModule {
     DeleteBoardInput: 'id' | 'teamId';
     RenameBoardInput: 'id' | 'teamId' | 'name';
     BoardsFilterInput: 'teamId';
+    UpdateBoardIsFavoriteInput: 'id' | 'teamId' | 'isFavorite';
     CreateTeamInput: 'name';
   };
   
@@ -35,6 +36,7 @@ export namespace FeaturesModule {
   export type RenameBoardResponse = Pick<Types.RenameBoardResponse, DefinedFields['RenameBoardResponse']>;
   export type BoardsFilterInput = Pick<Types.BoardsFilterInput, DefinedInputFields['BoardsFilterInput']>;
   export type BoardResponse = Pick<Types.BoardResponse, DefinedFields['BoardResponse']>;
+  export type UpdateBoardIsFavoriteInput = Pick<Types.UpdateBoardIsFavoriteInput, DefinedInputFields['UpdateBoardIsFavoriteInput']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
   export type PaginatedTeam = Pick<Types.PaginatedTeam, DefinedFields['PaginatedTeam']>;

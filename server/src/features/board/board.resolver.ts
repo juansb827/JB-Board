@@ -22,6 +22,10 @@ const Mutation: FeaturesModule.MutationResolvers = {
   renameBoard: async (parent, args, ctx) => {
     return { board: await BoardService.rename(args.input) };
   },
+  updateBoardIsFavorite: async (parent, args, ctx) => {
+    await BoardService.updateIsFavorite(args.input);
+    return true;
+  },
 };
 
 const Board: FeaturesModule.BoardResolvers = {

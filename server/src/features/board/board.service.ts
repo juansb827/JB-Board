@@ -4,6 +4,7 @@ import {
   CreateBoardInput,
   DeleteBoardInput,
   RenameBoardInput,
+  UpdateBoardIsFavoriteInput,
   User,
 } from "@generated/graphql/graphql.generated";
 import { BoardRepository } from "./board.repository";
@@ -45,6 +46,21 @@ export class BoardService {
 
   static async rename(input: RenameBoardInput) {
     return BoardRepository.rename({ ...input, userId: 1 });
+  }
+
+  static updateIsFavorite({
+    id: boardId,
+    teamId,
+    ...rest
+  }: UpdateBoardIsFavoriteInput) {
+    return BoardRepository.upsertUserBoardAssociation({
+      teamId: teamId,
+      userBoard: {
+        userId: 1,
+        boardId,
+        ...rest,
+      },
+    });
   }
   static async loadAuthor(ctx: GqlContext, parent: Board) {
     const loader = ctx.getOrCreateLoader("users:byId", () => {
