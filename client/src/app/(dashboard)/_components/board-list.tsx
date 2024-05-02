@@ -270,10 +270,11 @@ const BoardTableRow = ({
     id: string;
   };
 }) => {
-  const currentUserId = "1";
+  const { data } = useUserDashboardInfo();
+  const currentUserId = data?.user.id;
   const author = board.author.name;
   const lastEditor =
-    board.author.id === currentUserId ? "You" : board.author.name; // TODO: fix
+    board.author.id === currentUserId ? "You" : board.author.name;
   const lastUpdateAt = formatDistanceToNow(board.updatedAt, {
     addSuffix: true,
   });
