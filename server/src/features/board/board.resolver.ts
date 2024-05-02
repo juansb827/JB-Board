@@ -19,6 +19,9 @@ const Mutation: FeaturesModule.MutationResolvers = {
     await BoardService.delete(args.input);
     return true;
   },
+  renameBoard: async (parent, args, ctx) => {
+    return { board: await BoardService.rename(args.input) };
+  },
 };
 
 const Board: FeaturesModule.BoardResolvers = {

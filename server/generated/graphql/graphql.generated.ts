@@ -79,6 +79,7 @@ export type Mutation = {
   deleteBoard: Scalars['Boolean']['output'];
   deleteTweet?: Maybe<Tweet>;
   markTweetRead?: Maybe<Scalars['Boolean']['output']>;
+  renameBoard: RenameBoardResponse;
 };
 
 
@@ -114,6 +115,11 @@ export type MutationDeleteTweetArgs = {
 
 export type MutationMarkTweetReadArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationRenameBoardArgs = {
+  input: RenameBoardInput;
 };
 
 export type Notification = {
@@ -165,6 +171,17 @@ export type QueryTeamArgs = {
 
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type RenameBoardInput = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  teamId: Scalars['ID']['input'];
+};
+
+export type RenameBoardResponse = {
+  __typename?: 'RenameBoardResponse';
+  board: Board;
 };
 
 export type Stat = {
@@ -287,6 +304,8 @@ export type ResolversTypes = {
   Notification: ResolverTypeWrapper<Notification>;
   PaginatedTeam: ResolverTypeWrapper<PaginatedTeam>;
   Query: ResolverTypeWrapper<{}>;
+  RenameBoardInput: RenameBoardInput;
+  RenameBoardResponse: ResolverTypeWrapper<RenameBoardResponse>;
   Stat: ResolverTypeWrapper<Stat>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Team: ResolverTypeWrapper<Team>;
@@ -314,6 +333,8 @@ export type ResolversParentTypes = {
   Notification: Notification;
   PaginatedTeam: PaginatedTeam;
   Query: {};
+  RenameBoardInput: RenameBoardInput;
+  RenameBoardResponse: RenameBoardResponse;
   Stat: Stat;
   String: Scalars['String']['output'];
   Team: Team;
@@ -365,6 +386,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'input'>>;
   deleteTweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   markTweetRead?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMarkTweetReadArgs, 'id'>>;
+  renameBoard?: Resolver<ResolversTypes['RenameBoardResponse'], ParentType, ContextType, RequireFields<MutationRenameBoardArgs, 'input'>>;
 };
 
 export type NotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Notification'] = ResolversParentTypes['Notification']> = {
@@ -387,6 +409,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<QueryTeamArgs, 'id'>>;
   teams?: Resolver<Maybe<ResolversTypes['PaginatedTeam']>, ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+};
+
+export type RenameBoardResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RenameBoardResponse'] = ResolversParentTypes['RenameBoardResponse']> = {
+  board?: Resolver<ResolversTypes['Board'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type StatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {
@@ -436,6 +463,7 @@ export type Resolvers<ContextType = any> = {
   Notification?: NotificationResolvers<ContextType>;
   PaginatedTeam?: PaginatedTeamResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  RenameBoardResponse?: RenameBoardResponseResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;
   Tweet?: TweetResolvers<ContextType>;

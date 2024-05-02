@@ -44,15 +44,24 @@ export class BoardRepository {
       .where("id", "=", args.id)
       .where("teamId", "=", args.teamId)
       .where((eb) =>
-        eb.exists(
-          UserRepository.userBelongsToTeam(args.userId, args.teamId)
-          // ebeb
-          //   .selectFrom("TeamUser")
-          //   .select("TeamUser.teamId")
-          //   .where("TeamUser.teamId", "=", args.teamId)
-          //   .where("TeamUser.userId", "=", args.userId)
-        )
+        eb.exists(UserRepository.userBelongsToTeam(args.userId, args.teamId))
       )
+      .executeTakeFirstOrThrow();
+  }
+
+  static async rename(args: { userId: ID; teamId: ID; id: ID; name: string }) {
+    const db = await getDb();
+    return db
+      .updateTable("Board")
+      .set({
+        title: args.name,
+      })
+      .where("id", "=", args.id)
+      .where("teamId", "=", args.teamId)
+      .where((eb) =>
+        eb.exists(UserRepository.userBelongsToTeam(args.userId, args.teamId))
+      )
+      .returningAll()
       .executeTakeFirstOrThrow();
   }
 }

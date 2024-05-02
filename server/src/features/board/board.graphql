@@ -18,13 +18,19 @@ input DeleteBoardInput {
   teamId: ID!
 }
 
+input RenameBoardInput {
+  id: ID!
+  teamId: ID!
+  name: String!
+}
+
 type CreateBoardResponse {
   board: Board!
 }
 
-# type DeleteBoardResponse {
-#   board: Board!
-# }
+type RenameBoardResponse {
+  board: Board!
+}
 
 input BoardsFilterInput {
   teamId: ID!
@@ -41,4 +47,5 @@ type Query {
 type Mutation {
   createBoard(input: CreateBoardInput!): CreateBoardResponse!
   deleteBoard(input: DeleteBoardInput!): Boolean!
+  renameBoard(input: RenameBoardInput!): RenameBoardResponse!
 }

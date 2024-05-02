@@ -8,6 +8,7 @@ import {
   useBoards,
   useCreateBoard,
   useDeleteBoard,
+  useRenameBoard,
 } from "@/features/board/board.queries";
 import Image from "next/image";
 import {
@@ -105,30 +106,29 @@ const ConfirmationAlertDialog = ({
 const RenameDialog = ({
   board,
   team,
-  oldName,
   open,
   setOpen,
 }: {
   // children: React.ReactNode;
   open: boolean;
   setOpen: (val: boolean) => void;
-  oldName: string;
   board: BoardsQuery["boards"]["nodes"][number];
   team: {
     id: string;
   };
   // onConfirm: () => void;
 }) => {
-  const [name, setName] = useState<Maybe<string>>(null);
-  const mutation = useCreateBoard();
+  const [name, setName] = useState<string | undefined>(board.title);
+  const mutation = useRenameBoard();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Rename", {
-      boardId: board.id,
+    await mutation.mutateAsync({
+      id: board.id,
       teamId: team.id,
-      name,
+      name: name!,
     });
+    setOpen(false);
   };
 
   return (
@@ -148,7 +148,7 @@ const RenameDialog = ({
             </h3>
             <Input
               id="name"
-              placeholder={oldName}
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
@@ -208,7 +208,6 @@ const BoardDropdown = ({
         team={team}
         open={openRenameDialog}
         setOpen={setOpenRenameDialog}
-        oldName={board.title}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -6,9 +6,10 @@ export namespace FeaturesModule {
   interface DefinedFields {
     Board: 'id' | 'createdAt' | 'updatedAt' | 'title' | 'author' | 'team' | 'imageUrl';
     CreateBoardResponse: 'board';
+    RenameBoardResponse: 'board';
     BoardResponse: 'nodes';
     Query: 'boards' | 'team' | 'teams' | 'user';
-    Mutation: 'createBoard' | 'deleteBoard' | 'createTeam' | 'createUser';
+    Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'createTeam' | 'createUser';
     Team: 'id' | 'name' | 'extra';
     PaginatedTeam: 'nodes';
     CreateTeamResponse: 'team';
@@ -18,6 +19,7 @@ export namespace FeaturesModule {
   interface DefinedInputFields {
     CreateBoardInput: 'title' | 'teamId';
     DeleteBoardInput: 'id' | 'teamId';
+    RenameBoardInput: 'id' | 'teamId' | 'name';
     BoardsFilterInput: 'teamId';
     CreateTeamInput: 'name';
   };
@@ -28,7 +30,9 @@ export namespace FeaturesModule {
   export type Team = Pick<Types.Team, DefinedFields['Team']>;
   export type CreateBoardInput = Pick<Types.CreateBoardInput, DefinedInputFields['CreateBoardInput']>;
   export type DeleteBoardInput = Pick<Types.DeleteBoardInput, DefinedInputFields['DeleteBoardInput']>;
+  export type RenameBoardInput = Pick<Types.RenameBoardInput, DefinedInputFields['RenameBoardInput']>;
   export type CreateBoardResponse = Pick<Types.CreateBoardResponse, DefinedFields['CreateBoardResponse']>;
+  export type RenameBoardResponse = Pick<Types.RenameBoardResponse, DefinedFields['RenameBoardResponse']>;
   export type BoardsFilterInput = Pick<Types.BoardsFilterInput, DefinedInputFields['BoardsFilterInput']>;
   export type BoardResponse = Pick<Types.BoardResponse, DefinedFields['BoardResponse']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
@@ -39,6 +43,7 @@ export namespace FeaturesModule {
   
   export type BoardResolvers = Pick<Types.BoardResolvers, DefinedFields['Board'] | '__isTypeOf'>;
   export type CreateBoardResponseResolvers = Pick<Types.CreateBoardResponseResolvers, DefinedFields['CreateBoardResponse'] | '__isTypeOf'>;
+  export type RenameBoardResponseResolvers = Pick<Types.RenameBoardResponseResolvers, DefinedFields['RenameBoardResponse'] | '__isTypeOf'>;
   export type BoardResponseResolvers = Pick<Types.BoardResponseResolvers, DefinedFields['BoardResponse'] | '__isTypeOf'>;
   export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
   export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
@@ -50,6 +55,7 @@ export namespace FeaturesModule {
   export interface Resolvers {
     Board?: BoardResolvers;
     CreateBoardResponse?: CreateBoardResponseResolvers;
+    RenameBoardResponse?: RenameBoardResponseResolvers;
     BoardResponse?: BoardResponseResolvers;
     Query?: QueryResolvers;
     Mutation?: MutationResolvers;
