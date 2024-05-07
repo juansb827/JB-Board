@@ -15,6 +15,7 @@ export interface GqlContext {
   ) => DataLoader<K, V>;
 }
 
+export declare type Maybe<T> = null | undefined | T;
 /**
  * Marks as optional all properties that are lazily resolved
  */

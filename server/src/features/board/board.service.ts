@@ -32,7 +32,11 @@ const boardImagePlaceholders = [
 
 export class BoardService {
   static findAll(filter: BoardsFilterInput) {
-    return BoardRepository.findAll({ userId: 1, ...filter });
+    return BoardRepository.findAll({
+      userId: 1,
+      ...filter,
+      search: filter.search?.trim(),
+    });
   }
   static create(input: CreateBoardInput) {
     const randomImageIdx = Math.floor(

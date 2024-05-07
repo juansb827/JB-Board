@@ -35,6 +35,8 @@ type RenameBoardResponse {
 
 input BoardsFilterInput {
   teamId: ID!
+  isFavorite: Boolean
+  search: String
 }
 
 type BoardResponse {

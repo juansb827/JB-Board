@@ -407,7 +407,11 @@ const BoardList = ({
 }: BoardListProps) => {
   // const { data: dashboardInfo } = useUserDashboardInfo();
   // console.log("List Team Component", dashboardInfo);
-  const result = useBoards({ teamId: team.id });
+  const result = useBoards({
+    teamId: team.id,
+    search: searchTerm,
+    isFavorite: favorites,
+  });
 
   const { data: boards, isLoading: isQueryLoading } = result;
 

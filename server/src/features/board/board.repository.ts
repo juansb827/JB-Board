@@ -1,5 +1,5 @@
 import { getDb } from "@/core/database";
-import { ID } from "@/shared/types";
+import { ID, Maybe } from "@/shared/types";
 import { Board, DB, UserBoard } from "@generated/db/types.generated";
 import {
   ExpressionBuilder,
@@ -20,13 +20,28 @@ export class BoardRepository {
       .executeTakeFirstOrThrow();
   }
 
-  static async findAll(args: { teamId: ID; userId: ID }) {
+  static async findAll(args: {
+    teamId: ID;
+    userId: ID;
+    isFavorite?: Maybe<boolean>;
+    search: Maybe<string>;
+  }) {
     return (await getDb())
       .selectFrom("Board")
       .selectAll()
       .where("Board.teamId", "=", args.teamId)
       .innerJoin("TeamUser", "TeamUser.teamId", "Board.teamId")
       .where("TeamUser.userId", "=", args.userId)
+      .$if(Boolean(args.search), (eb) =>
+        // TODO: index or fts
+        eb.where("Board.title", "like", "%" + args.search + "%")
+      )
+      .$if(Boolean(args.isFavorite), (eb) =>
+        eb
+          .innerJoin("UserBoard", "UserBoard.boardId", "Board.id")
+          .where("UserBoard.userId", "=", args.userId)
+          .where("UserBoard.isFavorite", "=", true)
+      )
       .execute();
   }
   static async create({

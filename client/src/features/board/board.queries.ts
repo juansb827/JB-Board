@@ -163,6 +163,7 @@ export const useUpdateBoardIsFavorite = () => {
           });
         }
       );
+      queryClient.invalidateQueries({ queryKey: ["boards", variables.teamId] });
     },
   });
 };

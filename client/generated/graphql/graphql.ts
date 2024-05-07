@@ -36,6 +36,8 @@ export type BoardResponse = {
 };
 
 export type BoardsFilterInput = {
+  isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
   teamId: Scalars['ID']['input'];
 };
 

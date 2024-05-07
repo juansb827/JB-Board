@@ -21,7 +21,7 @@ export namespace FeaturesModule {
     CreateBoardInput: 'title' | 'teamId';
     DeleteBoardInput: 'id' | 'teamId';
     RenameBoardInput: 'id' | 'teamId' | 'name';
-    BoardsFilterInput: 'teamId';
+    BoardsFilterInput: 'teamId' | 'isFavorite' | 'search';
     UpdateBoardIsFavoriteInput: 'id' | 'teamId' | 'isFavorite';
     CreateTeamInput: 'name';
   };
