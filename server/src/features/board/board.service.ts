@@ -17,9 +17,17 @@ import _ from "lodash";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 const boardImagePlaceholders = [
-  "/board-placeholders/image1.png",
-  "/board-placeholders/image2.png",
-  "/board-placeholders/image3.jpg",
+  "/board-placeholders/image1.jpeg",
+  "/board-placeholders/image2.jpeg",
+  "/board-placeholders/image3.jpeg",
+  "/board-placeholders/image4.jpeg",
+  "/board-placeholders/image5.jpeg",
+  "/board-placeholders/image6.jpeg",
+  "/board-placeholders/image7.jpeg",
+  "/board-placeholders/image8.jpeg",
+  "/board-placeholders/image9.jpeg",
+  "/board-placeholders/image10.jpeg",
+  "/board-placeholders/image11.jpeg",
 ];
 
 export class BoardService {
@@ -42,7 +50,8 @@ export class BoardService {
   }
 
   static async delete(input: DeleteBoardInput) {
-    const result = await BoardRepository.delete({ ...input, userId: 1 });
+    const userId = 1;
+    const result = await BoardRepository.delete({ ...input, userId });
     if (result.numDeletedRows.toString() === "0") {
       throw new Error("COULD NOT DELETE BOARD");
     }

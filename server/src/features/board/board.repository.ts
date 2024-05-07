@@ -12,6 +12,14 @@ import {
 import { UserRepository } from "../user/user.repository";
 
 export class BoardRepository {
+  static async findOne(id: ID) {
+    return (await getDb())
+      .selectFrom("Board")
+      .selectAll()
+      .where("id", "=", +id)
+      .executeTakeFirstOrThrow();
+  }
+
   static async findAll(args: { teamId: ID; userId: ID }) {
     return (await getDb())
       .selectFrom("Board")
@@ -42,16 +50,41 @@ export class BoardRepository {
   }
 
   static async delete(args: { userId: ID; teamId: ID; id: ID }) {
-    const db = await getDb();
-    // TODO: delete user team
-    return db
-      .deleteFrom("Board")
-      .where("id", "=", args.id)
-      .where("teamId", "=", args.teamId)
-      .where((eb) =>
-        eb.exists(UserRepository.userBelongsToTeam(args.userId, args.teamId))
-      )
-      .executeTakeFirstOrThrow();
+    return (await getDb()).transaction().execute(async (trx) => {
+      return (
+        trx
+          .with("validated_board", (db) =>
+            db
+              .selectFrom("Board")
+              .selectAll()
+              .where("id", "=", args.id)
+              .where("authorId", "=", args.userId)
+          )
+          .with("2", (db) =>
+            db
+              .deleteFrom("UserBoard")
+              .where(
+                "boardId",
+                "=",
+                db.selectFrom("validated_board").select("validated_board.id")
+              )
+          )
+          // .with("last", (db) => {
+          //   return db
+          //     .deleteFrom("Board")
+          //     .where(
+          //       "Board.id",
+          //       "=",
+          //       db.selectFrom("validated_board").select("validated_board.id")
+          //     );
+          // })
+          .deleteFrom("Board")
+          .whereRef("Board.id", "=", (eb) =>
+            eb.selectFrom("validated_board").select("validated_board.id")
+          )
+          .executeTakeFirst()
+      );
+    });
   }
 
   static async rename(args: { userId: ID; teamId: ID; id: ID; name: string }) {
@@ -80,10 +113,9 @@ export class BoardRepository {
       .insertInto("UserBoard")
       .values(() => ({
         ...userBoard,
-        boardId: BoardRepository.boardAndUserBelongToTeam(
+        boardId: BoardRepository.boardAndUserAreAssociated(
           userBoard.boardId,
-          userBoard.userId,
-          teamId
+          userBoard.userId
         ),
       }))
       .onConflict((oc) =>
@@ -135,17 +167,28 @@ export class BoardRepository {
   }
 
   /**
-   * Returns the boardId if the board and the user belongs to the team
+   * Expression that returns the boardId if the user belongs to the team of the board
    */
-  static boardAndUserBelongToTeam(boardId: ID, userId: ID, teamId: ID) {
+  static boardAndUserAreAssociated(boardId: ID, userId: ID) {
     // Using this syntax so that the query builder using this expression can be of any type
     // not just "User"
     const eb = expressionBuilder<DB, "Board">(); // second type arg here doesn't matter
-    return eb
-      .selectFrom("Board")
-      .select("Board.id")
-      .where("Board.id", "=", boardId)
-      .where("Board.teamId", "=", teamId)
-      .where(eb.exists(UserRepository.userBelongsToTeam(userId, teamId)));
+    return (
+      // Using an alias just for example
+      // every column ref in this expression must use the alias otherwise the query will fail
+      eb
+        .selectFrom("Board as aliasForBoardTable")
+        .select("aliasForBoardTable.id")
+        .where("aliasForBoardTable.id", "=", boardId)
+        .where((eb) =>
+          eb.exists(
+            UserRepository.userBelongsToTeamRef(
+              eb,
+              userId,
+              "aliasForBoardTable.teamId"
+            )
+          )
+        )
+    );
   }
 }
