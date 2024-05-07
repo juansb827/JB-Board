@@ -17,9 +17,9 @@ const font = Poppins({
 });
 
 const OrgSidebar = () => {
-  const { activeTeam } = useDashboardStore();
-  const searchParams = useSearchParams();
-  const favorites = searchParams.get("favorites");
+  const { activeTeam, searchParams, setSearchParams } = useDashboardStore();
+  // const searchParams = useSearchParams();
+  const favorites = searchParams.favorites;
 
   const TeamMenu = () => (
     <>
@@ -33,7 +33,7 @@ const OrgSidebar = () => {
           size="lg"
           className="font-normal justify-start px-2 gap-x-2"
         >
-          <Link href="/">
+          <Link href="/" onClick={() => setSearchParams({})}>
             {/* <div className="rounded-lg flex items-center gap-x-2 bg-gray-200 p-2">
             </div> */}
             <LayoutDashboard className="w-4 h-4" />
@@ -47,6 +47,7 @@ const OrgSidebar = () => {
           className="font-normal justify-start px-2 gap-x-2"
         >
           <Link
+            onClick={() => setSearchParams({ favorites: true })}
             href={{
               pathname: "/",
               query: {

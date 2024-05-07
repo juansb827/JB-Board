@@ -5,20 +5,33 @@ import { NextPage } from "next";
 import BoardList from "./_components/board-list";
 import { useDashboardStore } from "@/features/dashboard/dashboard.store";
 import { useUserDashboardInfo } from "@/features/user/user.queries";
+import { useEffect } from "react";
+import { useDebounceValue } from "usehooks-ts";
 
 interface DashboardPageSearchParams {
   favorites?: string;
   searchTerm?: string;
 }
 export default function DashboardPage({
-  searchParams: { favorites, searchTerm },
+  searchParams: urlSearchParams,
 }: {
   searchParams: DashboardPageSearchParams;
 }) {
-  // TODO:
-
   const { data } = useUserDashboardInfo();
-  const { activeTeam } = useDashboardStore();
+  const {
+    activeTeam,
+    searchParams: { favorites, searchTerm },
+    setSearchParams,
+  } = useDashboardStore();
+
+  // useEffect(() => {
+  //   console.log("INIT", urlSearchParams);
+  //   setSearchParams({
+  //     favorites: urlSearchParams.favorites === "true",
+  //     searchTerm: urlSearchParams.searchTerm,
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   if (!data) {
     return <h1>Error</h1>;
@@ -38,10 +51,7 @@ export default function DashboardPage({
       <h1 className="text-3xl pl-4 mb-4 font-semibold">
         Boards in {activeTeam.name}
       </h1>
-      <BoardList
-        team={activeTeam}
-        searchParams={{ favorites: favorites === "true", searchTerm }}
-      />
+      <BoardList team={activeTeam} searchParams={{ favorites, searchTerm }} />
     </div>
   );
 }

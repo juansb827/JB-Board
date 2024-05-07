@@ -397,7 +397,7 @@ interface BoardListProps {
     name: string;
   };
   searchParams: {
-    favorites: boolean;
+    favorites?: boolean;
     searchTerm?: string;
   };
 }
