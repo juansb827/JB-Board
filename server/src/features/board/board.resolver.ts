@@ -2,18 +2,19 @@ import { BoardResponse } from "@generated/graphql/graphql.generated";
 import { FeaturesModule } from "../generated-types/module-types";
 import { BoardService } from "./board.service";
 import { Board } from "@generated/db/types.generated";
+import { asyncLocalStorage } from "@/core/server/asyncLocalStorage";
 
 const Query: FeaturesModule.QueryResolvers = {
   boards: async (parent, args, ctx) => {
     const res = {
-      nodes: await BoardService.findAll(args.filter),
+      nodes: await BoardService.findAll(ctx, args.filter),
     };
     return res;
   },
 };
 const Mutation: FeaturesModule.MutationResolvers = {
   createBoard: async (parent, args, ctx) => {
-    return { board: await BoardService.create(args.input) };
+    return { board: await BoardService.create(ctx, args.input) };
   },
   deleteBoard: async (parent, args, ctx) => {
     await BoardService.delete(args.input);

@@ -8,6 +8,9 @@ export type JSDate = Date;
 export type ID = string | number;
 
 export interface GqlContext {
+  user: {
+    id: ID;
+  };
   dataLoaders: { [k: string]: DataLoader<any, any> };
   getOrCreateLoader: <K, V>(
     name: string,

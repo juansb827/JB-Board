@@ -20,10 +20,12 @@
   - Prefetch on Server Components
     https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr
   - Refetch using tags
+  - Pass context using async hooks
 - Others
 
   - DB diagram
 
+- async hooks
 - abac policies
 - mhttps://profy.dev/article/react-architecture-api-layer#the-final-result
 - https://nextjs.org/docs/app/building-your-application/rendering

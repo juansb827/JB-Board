@@ -15,6 +15,7 @@ import { UserBoard } from "@generated/db/types.generated";
 import { Selectable } from "kysely";
 import _ from "lodash";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { getGqlContextOrThrow } from "@/core/server/asyncLocalStorage";
 
 const boardImagePlaceholders = [
   "/board-placeholders/image1.jpeg",
@@ -31,14 +32,14 @@ const boardImagePlaceholders = [
 ];
 
 export class BoardService {
-  static findAll(filter: BoardsFilterInput) {
+  static findAll(ctx: GqlContext, filter: BoardsFilterInput) {
     return BoardRepository.findAll({
-      userId: 1,
+      userId: ctx.user.id,
       ...filter,
       search: filter.search?.trim(),
     });
   }
-  static create(input: CreateBoardInput) {
+  static create(ctx: GqlContext, input: CreateBoardInput) {
     const randomImageIdx = Math.floor(
       boardImagePlaceholders.length * Math.random()
     );
@@ -47,7 +48,7 @@ export class BoardService {
         ...input,
         title: input.title || "",
         updatedAt: new Date(),
-        authorId: 1, // TODO: grab from token
+        authorId: ctx.user.id,
         imageUrl: boardImagePlaceholders[randomImageIdx],
       },
     });
