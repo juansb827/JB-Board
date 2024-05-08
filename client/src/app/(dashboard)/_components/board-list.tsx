@@ -413,7 +413,7 @@ const BoardList = ({
     isFavorite: favorites,
   });
 
-  const { data: boards, isLoading: isQueryLoading } = result;
+  const { data: boards, isLoading: isQueryLoading, isFetching } = result;
 
   if (isQueryLoading) {
     return <BoardTable team={team} isQueryLoading={true} boards={[]} />;

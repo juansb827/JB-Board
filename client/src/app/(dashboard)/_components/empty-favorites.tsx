@@ -1,4 +1,7 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import { useDashboardStore } from "@/features/dashboard/dashboard.store";
+import Link from "next/link";
 import React from "react";
 
 interface EmptySearchProps {
@@ -6,6 +9,7 @@ interface EmptySearchProps {
 }
 
 const EmptyFavorites = ({ teamName }: EmptySearchProps) => {
+  const { setSearchParams } = useDashboardStore();
   return (
     <div className="h-full flex flex-col items-center gap-5 pt-20">
       <h2 className="text-2xl font-semibold">
@@ -14,7 +18,11 @@ const EmptyFavorites = ({ teamName }: EmptySearchProps) => {
       <p className="text-lg text-muted-foreground">
         Mark a board as favorite and it will appear here.
       </p>
-      <Button size={"lg"}>Show me all boards in the current team</Button>
+      <Button size={"lg"} asChild>
+        <Link href={"/"} onClick={() => setSearchParams({})}>
+          Show me all boards in the current team
+        </Link>
+      </Button>
     </div>
   );
 };
