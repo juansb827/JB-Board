@@ -38,6 +38,16 @@ export type BoardResponse = {
   nodes: Array<Board>;
 };
 
+export type BoardRoomEvent = {
+  __typename?: 'BoardRoomEvent';
+  data: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+};
+
+export type BoardRoomEventInput = {
+  boardId: Scalars['ID']['input'];
+};
+
 export type BoardsFilterInput = {
   isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
@@ -201,6 +211,16 @@ export type Stat = {
   views?: Maybe<Scalars['Int']['output']>;
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  boardRoomEvents?: Maybe<BoardRoomEvent>;
+};
+
+
+export type SubscriptionBoardRoomEventsArgs = {
+  input: BoardRoomEventInput;
+};
+
 export type Team = {
   __typename?: 'Team';
   extra?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -309,6 +329,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Board: ResolverTypeWrapper<Board>;
   BoardResponse: ResolverTypeWrapper<BoardResponse>;
+  BoardRoomEvent: ResolverTypeWrapper<BoardRoomEvent>;
+  BoardRoomEventInput: BoardRoomEventInput;
   BoardsFilterInput: BoardsFilterInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateBoardInput: CreateBoardInput;
@@ -328,6 +350,7 @@ export type ResolversTypes = {
   RenameBoardResponse: ResolverTypeWrapper<RenameBoardResponse>;
   Stat: ResolverTypeWrapper<Stat>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Subscription: ResolverTypeWrapper<{}>;
   Team: ResolverTypeWrapper<Team>;
   Tweet: ResolverTypeWrapper<Tweet>;
   UpdateBoardIsFavoriteInput: UpdateBoardIsFavoriteInput;
@@ -340,6 +363,8 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Board: Board;
   BoardResponse: BoardResponse;
+  BoardRoomEvent: BoardRoomEvent;
+  BoardRoomEventInput: BoardRoomEventInput;
   BoardsFilterInput: BoardsFilterInput;
   Boolean: Scalars['Boolean']['output'];
   CreateBoardInput: CreateBoardInput;
@@ -359,6 +384,7 @@ export type ResolversParentTypes = {
   RenameBoardResponse: RenameBoardResponse;
   Stat: Stat;
   String: Scalars['String']['output'];
+  Subscription: {};
   Team: Team;
   Tweet: Tweet;
   UpdateBoardIsFavoriteInput: UpdateBoardIsFavoriteInput;
@@ -381,6 +407,12 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type BoardResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BoardResponse'] = ResolversParentTypes['BoardResponse']> = {
   nodes?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BoardRoomEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['BoardRoomEvent'] = ResolversParentTypes['BoardRoomEvent']> = {
+  data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -450,6 +482,10 @@ export type StatResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  boardRoomEvents?: SubscriptionResolver<Maybe<ResolversTypes['BoardRoomEvent']>, "boardRoomEvents", ParentType, ContextType, RequireFields<SubscriptionBoardRoomEventsArgs, 'input'>>;
+};
+
 export type TeamResolvers<ContextType = any, ParentType extends ResolversParentTypes['Team'] = ResolversParentTypes['Team']> = {
   extra?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -486,6 +522,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   Board?: BoardResolvers<ContextType>;
   BoardResponse?: BoardResponseResolvers<ContextType>;
+  BoardRoomEvent?: BoardRoomEventResolvers<ContextType>;
   CreateBoardResponse?: CreateBoardResponseResolvers<ContextType>;
   CreateTeamResponse?: CreateTeamResponseResolvers<ContextType>;
   Date?: GraphQLScalarType;
@@ -496,6 +533,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   RenameBoardResponse?: RenameBoardResponseResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;
   Tweet?: TweetResolvers<ContextType>;
   UpdateBoardIsFavoriteResponse?: UpdateBoardIsFavoriteResponseResolvers<ContextType>;

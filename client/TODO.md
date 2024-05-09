@@ -33,3 +33,4 @@
 - hooks
 - next router vs navigation
 - ts module/namespaces
+- https://www.claritician.com/how-to-implement-full-text-search-in-prisma-with-postgresql

@@ -8,7 +8,13 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import cors from "cors";
 import { GqlContext } from "@/shared/types";
 import { asyncLocalStorage } from "./asyncLocalStorage";
-
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default";
 // The GraphQL schema
 const typeDefs = await loadFiles("src/**/*.graphql");
 const resolvers = await loadFiles("src/**/*.resolver.{js,ts}");
@@ -22,12 +28,38 @@ const app = express();
 //   asyncLocalStorage.run({} as unknown as any, () => next());
 // };
 const httpServer = http.createServer(app);
-const server = new ApolloServer<GqlContext>({
-  typeDefs,
-  resolvers,
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: "/subscriptions",
+});
+const serverCleanup = useServer({ schema }, wsServer);
 
+const apolloServer = new ApolloServer<GqlContext>({
+  schema,
   plugins: [
+    process.env.NODE_ENV === "production"
+      ? ApolloServerPluginLandingPageProductionDefault({
+          graphRef: "my-graph-id@my-graph-variant",
+          footer: false,
+        })
+      : ApolloServerPluginLandingPageLocalDefault({
+          footer: false,
+          embed: {
+            endpointIsEditable: true,
+          },
+        }),
     ApolloServerPluginDrainHttpServer({ httpServer }),
+    // Proper shutdown for the WebSocket server.
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
     // {
     //   async requestDidStart(ctx) {
     //     const store = {};
@@ -46,7 +78,7 @@ const server = new ApolloServer<GqlContext>({
 });
 
 export async function startServer() {
-  await server.start();
+  await apolloServer.start();
   app.use(
     "/graphql",
     cors<cors.CorsRequest>({
@@ -56,7 +88,7 @@ export async function startServer() {
     }),
     express.json(),
     // setContext,
-    expressMiddleware(server, {
+    expressMiddleware(apolloServer, {
       context: async ({ req, res }) => {
         // const store = asyncLocalStorage.getStore();
         // if (!store) {
