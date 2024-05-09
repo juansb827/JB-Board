@@ -1,6 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 import { GraphQLClient } from "graphql-request";
+import { createClient } from "graphql-ws";
 import { auth } from "../auth/firebase";
+import { clientConfig } from "../../../config/client-config";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -43,3 +45,7 @@ export const graphQLClient = new GraphQLClient(
     },
   }
 );
+
+export const graphqlSubscriptionsClient = createClient({
+  url: clientConfig.graphql.subscriptionsEndpoint,
+});

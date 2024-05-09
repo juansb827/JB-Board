@@ -1,12 +1,17 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import ToolBar from "./toolbar";
 import Collaborators from "./collaborators";
 import BoardInfo from "./boardInfo";
+import { useRoom, useRoomSubscription } from "@/features/room/room.queries";
 
 const BoardCanvas = () => {
+  useRoomSubscription({ boardId: "2" });
+  const { data } = useRoom({ boardId: "2" });
   return (
     <main className="h-full w-full relative bg-neutral-100 touch-none">
       <div className="absolute top-2 left-2 h-12">
+        {JSON.stringify(data, null, 4)}
         <BoardInfo />
       </div>
       <div className="absolute top-2 right-2 h-12">

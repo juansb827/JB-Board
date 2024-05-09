@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import serviceAccount from "../serviceAccount.json";
 
 export const serverConfig = {

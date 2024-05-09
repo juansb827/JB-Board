@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import type { FirebaseOptions } from "firebase/app";
 const firebase: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
@@ -10,4 +11,8 @@ const firebase: FirebaseOptions = {
 };
 export const clientConfig = {
   firebase,
+  graphql: {
+    subscriptionsEndpoint:
+      process.env.NEXT_PUBLIC_GRAPHQL_SUBSCRIPTIONS_ENDPOINT!,
+  },
 };
