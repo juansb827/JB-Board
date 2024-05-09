@@ -1,10 +1,22 @@
-type RoomEvent {
+interface Event {
+  type: String!
+}
+
+type RoomUserJoined implements Event {
+  type: String!
+  data: String!
+}
+
+type RoomCurrentState implements Event {
   type: String!
   data: String!
 }
 input RoomEventsInput {
   boardId: ID!
 }
+
+union RoomEvent = RoomUserJoined | RoomCurrentState
+
 type Subscription {
   roomEvents(input: RoomEventsInput!): RoomEvent
 }

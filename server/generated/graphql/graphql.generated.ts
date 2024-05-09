@@ -68,6 +68,10 @@ export type DeleteBoardInput = {
   teamId: Scalars['ID']['input'];
 };
 
+export type Event = {
+  type: Scalars['String']['output'];
+};
+
 export type Meta = {
   __typename?: 'Meta';
   count?: Maybe<Scalars['Int']['output']>;
@@ -193,14 +197,22 @@ export type RenameBoardResponse = {
   board: Board;
 };
 
-export type RoomEvent = {
-  __typename?: 'RoomEvent';
+export type RoomCurrentState = Event & {
+  __typename?: 'RoomCurrentState';
   data: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
 
+export type RoomEvent = RoomCurrentState | RoomUserJoined;
+
 export type RoomEventsInput = {
   boardId: Scalars['ID']['input'];
+};
+
+export type RoomUserJoined = Event & {
+  __typename?: 'RoomUserJoined';
+  data: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
 export type Stat = {
@@ -323,7 +335,15 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+/** Mapping of union types */
+export type ResolversUnionTypes<RefType extends Record<string, unknown>> = {
+  RoomEvent: ( RoomCurrentState ) | ( RoomUserJoined );
+};
 
+/** Mapping of interface types */
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
+  Event: ( RoomCurrentState ) | ( RoomUserJoined );
+};
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
@@ -337,6 +357,7 @@ export type ResolversTypes = {
   CreateTeamResponse: ResolverTypeWrapper<CreateTeamResponse>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DeleteBoardInput: DeleteBoardInput;
+  Event: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Event']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Meta: ResolverTypeWrapper<Meta>;
@@ -346,8 +367,10 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   RenameBoardInput: RenameBoardInput;
   RenameBoardResponse: ResolverTypeWrapper<RenameBoardResponse>;
-  RoomEvent: ResolverTypeWrapper<RoomEvent>;
+  RoomCurrentState: ResolverTypeWrapper<RoomCurrentState>;
+  RoomEvent: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['RoomEvent']>;
   RoomEventsInput: RoomEventsInput;
+  RoomUserJoined: ResolverTypeWrapper<RoomUserJoined>;
   Stat: ResolverTypeWrapper<Stat>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Subscription: ResolverTypeWrapper<{}>;
@@ -371,6 +394,7 @@ export type ResolversParentTypes = {
   CreateTeamResponse: CreateTeamResponse;
   Date: Scalars['Date']['output'];
   DeleteBoardInput: DeleteBoardInput;
+  Event: ResolversInterfaceTypes<ResolversParentTypes>['Event'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Meta: Meta;
@@ -380,8 +404,10 @@ export type ResolversParentTypes = {
   Query: {};
   RenameBoardInput: RenameBoardInput;
   RenameBoardResponse: RenameBoardResponse;
-  RoomEvent: RoomEvent;
+  RoomCurrentState: RoomCurrentState;
+  RoomEvent: ResolversUnionTypes<ResolversParentTypes>['RoomEvent'];
   RoomEventsInput: RoomEventsInput;
+  RoomUserJoined: RoomUserJoined;
   Stat: Stat;
   String: Scalars['String']['output'];
   Subscription: {};
@@ -423,6 +449,11 @@ export type CreateTeamResponseResolvers<ContextType = any, ParentType extends Re
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
   name: 'Date';
 }
+
+export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
+  __resolveType: TypeResolveFn<'RoomCurrentState' | 'RoomUserJoined', ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
 
 export type MetaResolvers<ContextType = any, ParentType extends ResolversParentTypes['Meta'] = ResolversParentTypes['Meta']> = {
   count?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -468,7 +499,17 @@ export type RenameBoardResponseResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RoomCurrentStateResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoomCurrentState'] = ResolversParentTypes['RoomCurrentState']> = {
+  data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RoomEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoomEvent'] = ResolversParentTypes['RoomEvent']> = {
+  __resolveType: TypeResolveFn<'RoomCurrentState' | 'RoomUserJoined', ParentType, ContextType>;
+};
+
+export type RoomUserJoinedResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoomUserJoined'] = ResolversParentTypes['RoomUserJoined']> = {
   data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -525,13 +566,16 @@ export type Resolvers<ContextType = any> = {
   CreateBoardResponse?: CreateBoardResponseResolvers<ContextType>;
   CreateTeamResponse?: CreateTeamResponseResolvers<ContextType>;
   Date?: GraphQLScalarType;
+  Event?: EventResolvers<ContextType>;
   Meta?: MetaResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Notification?: NotificationResolvers<ContextType>;
   PaginatedTeam?: PaginatedTeamResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RenameBoardResponse?: RenameBoardResponseResolvers<ContextType>;
+  RoomCurrentState?: RoomCurrentStateResolvers<ContextType>;
   RoomEvent?: RoomEventResolvers<ContextType>;
+  RoomUserJoined?: RoomUserJoinedResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;

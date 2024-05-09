@@ -11,12 +11,14 @@ export namespace FeaturesModule {
     UpdateBoardIsFavoriteResponse: 'isFavorite';
     Query: 'boards' | 'team' | 'teams' | 'user';
     Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'updateBoardIsFavorite' | 'createTeam' | 'createUser';
-    RoomEvent: 'type' | 'data';
+    RoomUserJoined: 'type' | 'data';
+    RoomCurrentState: 'type' | 'data';
     Subscription: 'roomEvents';
     Team: 'id' | 'name' | 'extra';
     PaginatedTeam: 'nodes';
     CreateTeamResponse: 'team';
     User: 'id' | 'name' | 'email' | 'teams';
+    Event: 'type';
   };
   
   interface DefinedInputFields {
@@ -44,8 +46,11 @@ export namespace FeaturesModule {
   export type UpdateBoardIsFavoriteResponse = Pick<Types.UpdateBoardIsFavoriteResponse, DefinedFields['UpdateBoardIsFavoriteResponse']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
-  export type RoomEvent = Pick<Types.RoomEvent, DefinedFields['RoomEvent']>;
+  export type Event = Pick<Types.Event, DefinedFields['Event']>;
+  export type RoomUserJoined = Pick<Types.RoomUserJoined, DefinedFields['RoomUserJoined']>;
+  export type RoomCurrentState = Pick<Types.RoomCurrentState, DefinedFields['RoomCurrentState']>;
   export type RoomEventsInput = Pick<Types.RoomEventsInput, DefinedInputFields['RoomEventsInput']>;
+  export type RoomEvent = Types.RoomEvent;
   export type Subscription = Pick<Types.Subscription, DefinedFields['Subscription']>;
   export type PaginatedTeam = Pick<Types.PaginatedTeam, DefinedFields['PaginatedTeam']>;
   export type CreateTeamInput = Pick<Types.CreateTeamInput, DefinedInputFields['CreateTeamInput']>;
@@ -58,12 +63,14 @@ export namespace FeaturesModule {
   export type UpdateBoardIsFavoriteResponseResolvers = Pick<Types.UpdateBoardIsFavoriteResponseResolvers, DefinedFields['UpdateBoardIsFavoriteResponse'] | '__isTypeOf'>;
   export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
   export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
-  export type RoomEventResolvers = Pick<Types.RoomEventResolvers, DefinedFields['RoomEvent'] | '__isTypeOf'>;
+  export type RoomUserJoinedResolvers = Pick<Types.RoomUserJoinedResolvers, DefinedFields['RoomUserJoined'] | '__isTypeOf'>;
+  export type RoomCurrentStateResolvers = Pick<Types.RoomCurrentStateResolvers, DefinedFields['RoomCurrentState'] | '__isTypeOf'>;
   export type SubscriptionResolvers = Pick<Types.SubscriptionResolvers, DefinedFields['Subscription']>;
   export type TeamResolvers = Pick<Types.TeamResolvers, DefinedFields['Team'] | '__isTypeOf'>;
   export type PaginatedTeamResolvers = Pick<Types.PaginatedTeamResolvers, DefinedFields['PaginatedTeam'] | '__isTypeOf'>;
   export type CreateTeamResponseResolvers = Pick<Types.CreateTeamResponseResolvers, DefinedFields['CreateTeamResponse'] | '__isTypeOf'>;
   export type UserResolvers = Pick<Types.UserResolvers, DefinedFields['User'] | '__isTypeOf'>;
+  export type EventResolvers = Pick<Types.EventResolvers, DefinedFields['Event']>;
   
   export interface Resolvers {
     Board?: BoardResolvers;
@@ -73,7 +80,8 @@ export namespace FeaturesModule {
     UpdateBoardIsFavoriteResponse?: UpdateBoardIsFavoriteResponseResolvers;
     Query?: QueryResolvers;
     Mutation?: MutationResolvers;
-    RoomEvent?: RoomEventResolvers;
+    RoomUserJoined?: RoomUserJoinedResolvers;
+    RoomCurrentState?: RoomCurrentStateResolvers;
     Subscription?: SubscriptionResolvers;
     Team?: TeamResolvers;
     PaginatedTeam?: PaginatedTeamResolvers;
