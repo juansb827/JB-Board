@@ -1,28 +1,27 @@
 import { graphqlSubscriptionsClient } from "@/core/query";
 import { graphql } from "@generated/graphql";
 import {
-  BoardRoomEventInput,
+  RoomEventsInput,
   RoomEventsSubscription,
 } from "@generated/graphql/graphql";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { subSeconds } from "date-fns";
 import { useEffect } from "react";
 
-const gql = `subscription roomEvents($input: BoardRoomEventInput!) {
-    boardRoomEvents(input: $input) {
+const gql = `subscription roomEvents($input: RoomEventsInput!) {
+    roomEvents(input: $input) {
       data
       type
     }
   }` as const;
 const roomEventsDocument = graphql(`
-  subscription roomEvents($input: BoardRoomEventInput!) {
-    boardRoomEvents(input: $input) {
+  subscription roomEvents($input: RoomEventsInput!) {
+    roomEvents(input: $input) {
       data
       type
     }
   }
 `);
-export const useRoomSubscription = (input: BoardRoomEventInput) => {
+export const useRoomSubscription = (input: RoomEventsInput) => {
   const queryClient = useQueryClient();
   useEffect(() => {
     const client = graphqlSubscriptionsClient;
@@ -44,11 +43,11 @@ export const useRoomSubscription = (input: BoardRoomEventInput) => {
             }
             return {
               ...oldData,
-              lastEventId: event.data?.boardRoomEvents?.data,
+              lastEventId: event.data?.roomEvents?.data,
             };
           }
         );
-        console.log("E", event.data?.boardRoomEvents);
+        console.log("E", event.data?.roomEvents);
         // complete a running subscription by breaking the iterator loop
       }
     })();
@@ -63,7 +62,7 @@ interface RoomState {
   members: string[];
   lastEventId: number;
 }
-const getInitialRoomState = (input: BoardRoomEventInput): RoomState => {
+const getInitialRoomState = (input: RoomEventsInput): RoomState => {
   const initialRoomState = {
     boardId: input.boardId,
     members: [],
@@ -71,7 +70,7 @@ const getInitialRoomState = (input: BoardRoomEventInput): RoomState => {
   };
   return initialRoomState;
 };
-export const useRoom = (input: BoardRoomEventInput) => {
+export const useRoom = (input: RoomEventsInput) => {
   return useQuery({
     queryKey: ["room", input.boardId],
     queryFn: () => getInitialRoomState(input),

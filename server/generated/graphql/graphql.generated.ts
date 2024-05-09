@@ -38,16 +38,6 @@ export type BoardResponse = {
   nodes: Array<Board>;
 };
 
-export type BoardRoomEvent = {
-  __typename?: 'BoardRoomEvent';
-  data: Scalars['String']['output'];
-  type: Scalars['String']['output'];
-};
-
-export type BoardRoomEventInput = {
-  boardId: Scalars['ID']['input'];
-};
-
 export type BoardsFilterInput = {
   isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
@@ -203,6 +193,16 @@ export type RenameBoardResponse = {
   board: Board;
 };
 
+export type RoomEvent = {
+  __typename?: 'RoomEvent';
+  data: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+};
+
+export type RoomEventsInput = {
+  boardId: Scalars['ID']['input'];
+};
+
 export type Stat = {
   __typename?: 'Stat';
   likes?: Maybe<Scalars['Int']['output']>;
@@ -213,12 +213,12 @@ export type Stat = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  boardRoomEvents?: Maybe<BoardRoomEvent>;
+  roomEvents?: Maybe<RoomEvent>;
 };
 
 
-export type SubscriptionBoardRoomEventsArgs = {
-  input: BoardRoomEventInput;
+export type SubscriptionRoomEventsArgs = {
+  input: RoomEventsInput;
 };
 
 export type Team = {
@@ -329,8 +329,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Board: ResolverTypeWrapper<Board>;
   BoardResponse: ResolverTypeWrapper<BoardResponse>;
-  BoardRoomEvent: ResolverTypeWrapper<BoardRoomEvent>;
-  BoardRoomEventInput: BoardRoomEventInput;
   BoardsFilterInput: BoardsFilterInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateBoardInput: CreateBoardInput;
@@ -348,6 +346,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   RenameBoardInput: RenameBoardInput;
   RenameBoardResponse: ResolverTypeWrapper<RenameBoardResponse>;
+  RoomEvent: ResolverTypeWrapper<RoomEvent>;
+  RoomEventsInput: RoomEventsInput;
   Stat: ResolverTypeWrapper<Stat>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Subscription: ResolverTypeWrapper<{}>;
@@ -363,8 +363,6 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Board: Board;
   BoardResponse: BoardResponse;
-  BoardRoomEvent: BoardRoomEvent;
-  BoardRoomEventInput: BoardRoomEventInput;
   BoardsFilterInput: BoardsFilterInput;
   Boolean: Scalars['Boolean']['output'];
   CreateBoardInput: CreateBoardInput;
@@ -382,6 +380,8 @@ export type ResolversParentTypes = {
   Query: {};
   RenameBoardInput: RenameBoardInput;
   RenameBoardResponse: RenameBoardResponse;
+  RoomEvent: RoomEvent;
+  RoomEventsInput: RoomEventsInput;
   Stat: Stat;
   String: Scalars['String']['output'];
   Subscription: {};
@@ -407,12 +407,6 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type BoardResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BoardResponse'] = ResolversParentTypes['BoardResponse']> = {
   nodes?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type BoardRoomEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['BoardRoomEvent'] = ResolversParentTypes['BoardRoomEvent']> = {
-  data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -474,6 +468,12 @@ export type RenameBoardResponseResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RoomEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoomEvent'] = ResolversParentTypes['RoomEvent']> = {
+  data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type StatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {
   likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   responses?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -483,7 +483,7 @@ export type StatResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  boardRoomEvents?: SubscriptionResolver<Maybe<ResolversTypes['BoardRoomEvent']>, "boardRoomEvents", ParentType, ContextType, RequireFields<SubscriptionBoardRoomEventsArgs, 'input'>>;
+  roomEvents?: SubscriptionResolver<Maybe<ResolversTypes['RoomEvent']>, "roomEvents", ParentType, ContextType, RequireFields<SubscriptionRoomEventsArgs, 'input'>>;
 };
 
 export type TeamResolvers<ContextType = any, ParentType extends ResolversParentTypes['Team'] = ResolversParentTypes['Team']> = {
@@ -522,7 +522,6 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   Board?: BoardResolvers<ContextType>;
   BoardResponse?: BoardResponseResolvers<ContextType>;
-  BoardRoomEvent?: BoardRoomEventResolvers<ContextType>;
   CreateBoardResponse?: CreateBoardResponseResolvers<ContextType>;
   CreateTeamResponse?: CreateTeamResponseResolvers<ContextType>;
   Date?: GraphQLScalarType;
@@ -532,6 +531,7 @@ export type Resolvers<ContextType = any> = {
   PaginatedTeam?: PaginatedTeamResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RenameBoardResponse?: RenameBoardResponseResolvers<ContextType>;
+  RoomEvent?: RoomEventResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;

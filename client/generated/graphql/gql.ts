@@ -18,7 +18,7 @@ const documents = {
     "\n  mutation deleteBoard($input: DeleteBoardInput!) {\n    deleteBoard(input: $input)\n  }\n": types.DeleteBoardDocument,
     "\n  query boards($filter: BoardsFilterInput!) {\n    boards(filter: $filter) {\n      nodes {\n        id\n        updatedAt\n        imageUrl\n        title\n        author {\n          id\n          name\n        }\n        isFavorite\n      }\n    }\n  }\n": types.BoardsDocument,
     "\n  mutation updateBoardIsFavorite($input: UpdateBoardIsFavoriteInput!) {\n    updateBoardIsFavorite(input: $input) {\n      isFavorite\n    }\n  }\n": types.UpdateBoardIsFavoriteDocument,
-    "\n  subscription roomEvents($input: BoardRoomEventInput!) {\n    boardRoomEvents(input: $input) {\n      data\n      type\n    }\n  }\n": types.RoomEventsDocument,
+    "\n  subscription roomEvents($input: RoomEventsInput!) {\n    roomEvents(input: $input) {\n      data\n      type\n    }\n  }\n": types.RoomEventsDocument,
     "\n  mutation createTeam($input: CreateTeamInput!) {\n    createTeam(input: $input) {\n      team {\n        id\n        name\n      }\n    }\n  }\n": types.CreateTeamDocument,
     "\n  query userDashboard {\n    user(id: \"1\") {\n      id\n      name\n      email\n      teams {\n        id\n        name\n      }\n    }\n  }\n": types.UserDashboardDocument,
 };
@@ -60,7 +60,7 @@ export function graphql(source: "\n  mutation updateBoardIsFavorite($input: Upda
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  subscription roomEvents($input: BoardRoomEventInput!) {\n    boardRoomEvents(input: $input) {\n      data\n      type\n    }\n  }\n"): (typeof documents)["\n  subscription roomEvents($input: BoardRoomEventInput!) {\n    boardRoomEvents(input: $input) {\n      data\n      type\n    }\n  }\n"];
+export function graphql(source: "\n  subscription roomEvents($input: RoomEventsInput!) {\n    roomEvents(input: $input) {\n      data\n      type\n    }\n  }\n"): (typeof documents)["\n  subscription roomEvents($input: RoomEventsInput!) {\n    roomEvents(input: $input) {\n      data\n      type\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -65,14 +65,3 @@ type Mutation {
     input: UpdateBoardIsFavoriteInput!
   ): UpdateBoardIsFavoriteResponse!
 }
-
-type BoardRoomEvent {
-  type: String!
-  data: String!
-}
-input BoardRoomEventInput {
-  boardId: ID!
-}
-type Subscription {
-  boardRoomEvents(input: BoardRoomEventInput!): BoardRoomEvent
-}

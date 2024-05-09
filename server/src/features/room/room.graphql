@@ -1,0 +1,10 @@
+type RoomEvent {
+  type: String!
+  data: String!
+}
+input RoomEventsInput {
+  boardId: ID!
+}
+type Subscription {
+  roomEvents(input: RoomEventsInput!): RoomEvent
+}
