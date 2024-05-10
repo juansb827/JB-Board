@@ -1,4 +1,5 @@
 import { pubsub } from "@/core/server/pubsub";
+import { GqlContext } from "@/shared/types";
 import {
   RoomCurrentState,
   RoomEvent,
@@ -7,7 +8,7 @@ import {
 } from "@generated/graphql/graphql.generated";
 
 export class RoomService {
-  static async *getRoomEventsIterator(input: RoomEventsInput) {
+  static async *getRoomEventsIterator(ctx: GqlContext, input: RoomEventsInput) {
     const topicId = `team:teamId:board:${input.boardId}`;
 
     const initialState: RoomCurrentState = {

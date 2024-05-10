@@ -7,6 +7,7 @@ const Subscription: FeaturesModule.SubscriptionResolvers = {
   roomEvents: {
     subscribe: async function* (parent, args, ctx) {
       const ans: AsyncIterable<RoomEvent> = RoomService.getRoomEventsIterator(
+        ctx,
         args.input
       );
       for await (let event of ans) {

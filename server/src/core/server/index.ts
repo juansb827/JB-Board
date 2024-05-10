@@ -33,7 +33,23 @@ const wsServer = new WebSocketServer({
   server: httpServer,
   path: "/subscriptions",
 });
-const serverCleanup = useServer({ schema }, wsServer);
+const serverCleanup = useServer(
+  {
+    schema,
+    context: async (ctx, msg, args) => {
+      console.log("CTX");
+      // runs once for each client subscription
+      return getWSDynamicContext(ctx, msg, args);
+    },
+    onConnect: (ctx) => {
+      console.log("ON CONNECT");
+    },
+    onDisconnect: (ctx, code, reason) => {
+      console.log("ON DISCONNECT", code, reason);
+    },
+  },
+  wsServer
+);
 
 const apolloServer = new ApolloServer<GqlContext>({
   schema,
@@ -94,17 +110,8 @@ export async function startServer() {
         // if (!store) {
         //   throw new Error("Could not get AsyncLocalStorage");
         // }
-        const dataLoaders: GqlContext["dataLoaders"] = {};
-        const ctx: GqlContext = {
-          user: { id: "1" },
-          dataLoaders: dataLoaders,
-          getOrCreateLoader: (name, createLoaderFn) => {
-            dataLoaders[name] = dataLoaders[name] || createLoaderFn();
-            return dataLoaders[name];
-          },
-        };
         // store.ctx = ctx;
-        return ctx;
+        return getGQLContext();
       },
     })
   );
@@ -112,4 +119,28 @@ export async function startServer() {
     httpServer.listen({ port: 4000 }, resolve)
   );
   console.log(`🚀 http://localhost:4000/graphql`);
+}
+
+// TODO: fix types
+async function getWSDynamicContext(ctx: any, msg: any, args: any) {
+  // ctx is the graphql-ws Context where connectionParams live
+  if (ctx.connectionParams.authentication) {
+    // const currentUser = await findUser(ctx.connectionParams.authentication);
+    // return { currentUser };
+  }
+  // Otherwise let our resolvers know we don't have a current user
+  return getGQLContext();
+}
+
+async function getGQLContext() {
+  const dataLoaders: GqlContext["dataLoaders"] = {};
+  const ctx: GqlContext = {
+    user: { id: "1" },
+    dataLoaders: dataLoaders,
+    getOrCreateLoader: (name, createLoaderFn) => {
+      dataLoaders[name] = dataLoaders[name] || createLoaderFn();
+      return dataLoaders[name];
+    },
+  };
+  return ctx;
 }
