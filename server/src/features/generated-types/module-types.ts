@@ -11,7 +11,7 @@ export namespace FeaturesModule {
     UpdateBoardIsFavoriteResponse: 'isFavorite';
     Query: 'boards' | 'team' | 'teams' | 'user';
     Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'updateBoardIsFavorite' | 'createTeam' | 'createUser';
-    RoomUserJoined: 'type' | 'data';
+    RoomUserJoined: 'user';
     RoomCurrentState: 'type' | 'data';
     Subscription: 'roomEvents';
     Team: 'id' | 'name' | 'extra';

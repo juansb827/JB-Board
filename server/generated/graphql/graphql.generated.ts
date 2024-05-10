@@ -209,10 +209,9 @@ export type RoomEventsInput = {
   boardId: Scalars['ID']['input'];
 };
 
-export type RoomUserJoined = Event & {
+export type RoomUserJoined = {
   __typename?: 'RoomUserJoined';
-  data: Scalars['String']['output'];
-  type: Scalars['String']['output'];
+  user: User;
 };
 
 export type Stat = {
@@ -342,7 +341,7 @@ export type ResolversUnionTypes<RefType extends Record<string, unknown>> = {
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Event: ( RoomCurrentState ) | ( RoomUserJoined );
+  Event: ( RoomCurrentState );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -451,7 +450,7 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
-  __resolveType: TypeResolveFn<'RoomCurrentState' | 'RoomUserJoined', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'RoomCurrentState', ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -510,8 +509,7 @@ export type RoomEventResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type RoomUserJoinedResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoomUserJoined'] = ResolversParentTypes['RoomUserJoined']> = {
-  data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

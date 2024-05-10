@@ -1,6 +1,7 @@
 import { pubsub } from "@/core/server/pubsub";
 import { GqlContext } from "@/shared/types";
 import {
+  ResolversTypes,
   RoomCurrentState,
   RoomEvent,
   RoomEventsInput,
@@ -8,7 +9,10 @@ import {
 } from "@generated/graphql/graphql.generated";
 
 export class RoomService {
-  static async *getRoomEventsIterator(ctx: GqlContext, input: RoomEventsInput) {
+  static async *getRoomEventsIterator(
+    ctx: GqlContext,
+    input: RoomEventsInput
+  ): AsyncIterable<ResolversTypes["RoomEvent"]> {
     const topicId = `team:teamId:board:${input.boardId}`;
 
     const initialState: RoomCurrentState = {
@@ -16,16 +20,19 @@ export class RoomService {
       data: "board state...",
       type: "initial_state",
     };
-    const memberJoined: RoomUserJoined = {
+    const roomUserJoined: ResolversTypes["RoomUserJoined"] = {
       __typename: "RoomUserJoined",
-      data: "user 125 joined",
-      type: "user_joined",
+      user: {
+        id: 1,
+        name: "Se",
+        email: "ws@sample.com",
+      },
     };
 
     yield initialState;
-    yield memberJoined;
+    yield roomUserJoined;
     // send event to the rest of the room
-    await pubsub.publish(topicId, memberJoined);
+    await pubsub.publish(topicId, roomUserJoined);
     yield* pubsub.asyncIterator<RoomEvent>([
       topicId,
       "asd",

@@ -2,9 +2,8 @@ interface Event {
   type: String!
 }
 
-type RoomUserJoined implements Event {
-  type: String!
-  data: String!
+type RoomUserJoined {
+  user: User!
 }
 
 type RoomCurrentState implements Event {
