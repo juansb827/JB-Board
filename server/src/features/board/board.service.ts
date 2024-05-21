@@ -32,6 +32,12 @@ const boardImagePlaceholders = [
 ];
 
 export class BoardService {
+  static findOne(ctx: GqlContext, id: ID) {
+    return BoardRepository.findOne({
+      userId: ctx.user.id,
+      id,
+    });
+  }
   static findAll(ctx: GqlContext, filter: BoardsFilterInput) {
     return BoardRepository.findAll({
       userId: ctx.user.id,

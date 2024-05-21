@@ -10,11 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import { TeamDropdown } from "./team-dropdown";
 import { useDashboardStore } from "@/features/dashboard/dashboard.store";
-
-const font = Poppins({
-  subsets: ["latin"],
-  weight: ["600"],
-});
+import { font } from "@/shared/ui";
 
 const OrgSidebar = () => {
   const { activeTeam, searchParams, setSearchParams } = useDashboardStore();

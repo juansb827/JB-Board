@@ -152,6 +152,7 @@ export type Query = {
   Tweet?: Maybe<Tweet>;
   Tweets?: Maybe<Array<Maybe<Tweet>>>;
   TweetsMeta?: Maybe<Meta>;
+  board: Board;
   boards: BoardResponse;
   team?: Maybe<Team>;
   teams?: Maybe<PaginatedTeam>;
@@ -169,6 +170,11 @@ export type QueryTweetsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   sort_field?: InputMaybe<Scalars['String']['input']>;
   sort_order?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryBoardArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -487,6 +493,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Tweet?: Resolver<Maybe<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;
   Tweets?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tweet']>>>, ParentType, ContextType, Partial<QueryTweetsArgs>>;
   TweetsMeta?: Resolver<Maybe<ResolversTypes['Meta']>, ParentType, ContextType>;
+  board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<ResolversTypes['BoardResponse'], ParentType, ContextType, RequireFields<QueryBoardsArgs, 'filter'>>;
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<QueryTeamArgs, 'id'>>;
   teams?: Resolver<Maybe<ResolversTypes['PaginatedTeam']>, ParentType, ContextType>;

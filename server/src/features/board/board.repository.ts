@@ -12,11 +12,15 @@ import {
 import { UserRepository } from "../user/user.repository";
 
 export class BoardRepository {
-  static async findOne(id: ID) {
+  static async findOne(args: { userId: ID; id: ID }) {
     return (await getDb())
       .selectFrom("Board")
       .selectAll()
-      .where("id", "=", +id)
+      .where(
+        "id",
+        "=",
+        BoardRepository.boardAndUserAreAssociated(args.id, args.userId)
+      )
       .executeTakeFirstOrThrow();
   }
 

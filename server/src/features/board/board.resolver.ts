@@ -9,6 +9,9 @@ const Query: FeaturesModule.QueryResolvers = {
     };
     return res;
   },
+  board: async (parent, args, ctx) => {
+    return BoardService.findOne(ctx, args.id);
+  },
 };
 const Mutation: FeaturesModule.MutationResolvers = {
   createBoard: async (parent, args, ctx) => {

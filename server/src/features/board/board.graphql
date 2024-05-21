@@ -55,6 +55,7 @@ type UpdateBoardIsFavoriteResponse {
 
 type Query {
   boards(filter: BoardsFilterInput!): BoardResponse!
+  board(id: ID!): Board!
 }
 
 type Mutation {

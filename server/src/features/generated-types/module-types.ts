@@ -9,7 +9,7 @@ export namespace FeaturesModule {
     RenameBoardResponse: 'board';
     BoardResponse: 'nodes';
     UpdateBoardIsFavoriteResponse: 'isFavorite';
-    Query: 'boards' | 'team' | 'teams' | 'user';
+    Query: 'boards' | 'board' | 'team' | 'teams' | 'user';
     Mutation: 'createBoard' | 'deleteBoard' | 'renameBoard' | 'updateBoardIsFavorite' | 'createTeam' | 'createUser';
     RoomUserJoined: 'user';
     RoomCurrentState: 'type' | 'data';
