@@ -9,15 +9,13 @@ import { useEffect } from "react";
 
 const gql = `subscription roomEvents($input: RoomEventsInput!) {
     roomEvents(input: $input) {
-      data
-      type
+      __typename
     }
   }` as const;
 const roomEventsDocument = graphql(`
   subscription roomEvents($input: RoomEventsInput!) {
     roomEvents(input: $input) {
-      data
-      type
+      __typename
     }
   }
 `);

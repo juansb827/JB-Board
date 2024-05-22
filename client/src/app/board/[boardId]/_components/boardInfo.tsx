@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { font } from "@/shared/ui";
@@ -8,17 +8,25 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useBoard } from "@/features/board/board.queries";
+import { RenameBoardDialog } from "@/features/board/rename-board-dialog";
 
-const BoardInfo = () => {
+interface BoardInfoProps {
+  boardId: string;
+}
+const BoardInfo = ({ boardId }: BoardInfoProps) => {
   const router = useRouter();
+  const { data: board, isLoading } = useBoard(boardId);
+  const [isRenameDialogOpen, setRenameDialogOpen] = useState(false);
 
   const handleGoToHome = () => {
     router.push("/");
   };
 
-  const handleRenameBoard = () => {};
+  const handleRenameBoard = () => {
+    setRenameDialogOpen(true);
+  };
 
   return (
     <div className="bg-background h-full drop-shadow-md rounded-sm flex items-center gap-2 py-1 pl-1 pr-3">
@@ -56,7 +64,7 @@ const BoardInfo = () => {
             className="rounded-lg h-full px-2 transition cursor-pointer hover:bg-muted flex items-center"
           >
             <span className={cn(" text-base text-muted-foreground 3 ")}>
-              Board Tile 12
+              {board?.title}
             </span>
           </div>
         </TooltipTrigger>
@@ -64,6 +72,14 @@ const BoardInfo = () => {
           <p>Rename board</p>
         </TooltipContent>
       </Tooltip>
+
+      {board && (
+        <RenameBoardDialog
+          board={board}
+          open={isRenameDialogOpen}
+          setOpen={setRenameDialogOpen}
+        />
+      )}
     </div>
   );
 };

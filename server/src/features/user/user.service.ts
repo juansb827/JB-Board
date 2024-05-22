@@ -7,6 +7,7 @@ export class UserService {
     return UserRepository.findOne(id);
   }
   static loadUserTeams(userId: ID) {
+    // TODO data loader
     return TeamRepository.loadAll({ userId });
   }
 }

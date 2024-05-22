@@ -21,7 +21,7 @@ input DeleteBoardInput {
 
 input RenameBoardInput {
   id: ID!
-  teamId: ID!
+  teamId: ID
   name: String!
 }
 

@@ -36,4 +36,13 @@ export class TeamRepository {
       .where("TeamUser.userId", "in", [+args.userId])
       .execute();
   }
+
+  static async findByIdBatch(ids: readonly ID[]) {
+    // TODO restrict to teams that user is part of
+    return (await getDb())
+      .selectFrom("Team")
+      .selectAll()
+      .where("id", "in", ids)
+      .execute();
+  }
 }

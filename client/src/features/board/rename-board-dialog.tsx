@@ -14,7 +14,6 @@ import { BoardsQuery } from "@generated/graphql/graphql";
 
 export const RenameBoardDialog = ({
   board,
-  team,
   open,
   setOpen,
 }: {
@@ -22,9 +21,10 @@ export const RenameBoardDialog = ({
   open: boolean;
   setOpen: (val: boolean) => void;
   board: BoardsQuery["boards"]["nodes"][number];
-  team: {
-    id: string;
-  };
+  // todo: remove
+  // team: {
+  //   id: string;
+  // };
   // onConfirm: () => void;
 }) => {
   const [name, setName] = useState<string | undefined>(board.title);
@@ -34,7 +34,6 @@ export const RenameBoardDialog = ({
     e.preventDefault();
     await mutation.mutateAsync({
       id: board.id,
-      teamId: team.id,
       name: name!,
     });
     setOpen(false);

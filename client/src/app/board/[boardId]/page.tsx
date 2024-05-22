@@ -5,11 +5,10 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useParams } from "next/navigation";
 
 const BoardPage = () => {
-  const router = useParams();
-  console.log(6666, router);
+  const { boardId} = useParams<{ boardId: string }>();
   return (
     <TooltipProvider>
-      <BoardCanvas />
+      <BoardCanvas boardId={boardId} />
     </TooltipProvider>
   );
 };

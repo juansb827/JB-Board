@@ -5,6 +5,7 @@ import {
   BoardsQuery,
   CreateBoardInput,
   DeleteBoardInput,
+  QueryBoardArgs,
   RenameBoardInput,
   UpdateBoardIsFavoriteInput,
 } from "@generated/graphql/graphql";
@@ -31,6 +32,9 @@ const renameBoardDocument = graphql(`
         id
         title
         updatedAt
+        team {
+          id
+        }
       }
     }
   }
@@ -42,6 +46,21 @@ const deleteBoardDocument = graphql(`
   }
 `);
 
+const boardDocument = graphql(`
+  query board($boardId: ID!) {
+    board(id: $boardId) {
+      id
+      updatedAt
+      imageUrl
+      title
+      author {
+        id
+        name
+      }
+      isFavorite
+    }
+  }
+`);
 const boardsDocument = graphql(`
   query boards($filter: BoardsFilterInput!) {
     boards(filter: $filter) {
@@ -92,13 +111,17 @@ export const useRenameBoard = () => {
     },
     onError: () => {},
     onSuccess: (data, variables) => {
+      const updatedBoard = data.renameBoard.board;
+      queryClient.setQueryData(
+        ["boards", "detail", variables.id],
+        updatedBoard
+      );
       queryClient.setQueriesData(
-        { queryKey: ["boards", variables.teamId] },
+        { queryKey: ["boards", updatedBoard.team.id] },
         (oldData: BoardsQuery["boards"]["nodes"] | undefined) => {
           if (!oldData) {
             return;
           }
-          const updatedBoard = data.renameBoard.board;
           return oldData.map((board) => {
             if (board.id !== updatedBoard.id) {
               return board;
@@ -163,7 +186,9 @@ export const useUpdateBoardIsFavorite = () => {
           });
         }
       );
-      queryClient.invalidateQueries({ queryKey: ["boards", variables.teamId] });
+      queryClient.invalidateQueries({
+        queryKey: ["boards", variables.teamId],
+      });
     },
   });
 };
@@ -174,5 +199,18 @@ export const useBoards = (filter: BoardsFilterInput) => {
       graphQLClient
         .request(boardsDocument, { filter })
         .then((res) => res.boards.nodes),
+  });
+};
+
+export const useBoard = (id: string) => {
+  return useQuery({
+    // todo query key factory
+    // https://tkdodo.eu/blog/effective-react-query-keys
+    // todo: invalidate
+    queryKey: ["boards", "detail", id],
+    queryFn: () =>
+      graphQLClient
+        .request(boardDocument, { boardId: id })
+        .then((res) => res.board),
   });
 };

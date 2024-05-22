@@ -1,6 +1,8 @@
+import { Selectable } from "kysely";
 import { FeaturesModule } from "../generated-types/module-types";
 import { BoardService } from "./board.service";
 import { Board } from "@generated/db/types.generated";
+import { TeamService } from "../team/team.service";
 
 const Query: FeaturesModule.QueryResolvers = {
   boards: async (parent, args, ctx) => {
@@ -39,6 +41,12 @@ const Board: FeaturesModule.BoardResolvers = {
   },
   isFavorite: (parent, args, ctx) => {
     return BoardService.loadIsFavorite(ctx, parent);
+  },
+  team: (parent, args, ctx) => {
+    return TeamService.loadById(
+      ctx,
+      (parent as unknown as Selectable<Board>).teamId
+    );
   },
 };
 

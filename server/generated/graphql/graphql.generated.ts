@@ -195,7 +195,7 @@ export type QueryUserArgs = {
 export type RenameBoardInput = {
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
-  teamId: Scalars['ID']['input'];
+  teamId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type RenameBoardResponse = {

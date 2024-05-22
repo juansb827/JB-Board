@@ -46,6 +46,7 @@ export class BoardRepository {
           .where("UserBoard.userId", "=", args.userId)
           .where("UserBoard.isFavorite", "=", true)
       )
+      .orderBy("Board.id", "desc")
       .execute();
   }
   static async create({
@@ -106,7 +107,7 @@ export class BoardRepository {
     });
   }
 
-  static async rename(args: { userId: ID; teamId: ID; id: ID; name: string }) {
+  static async rename(args: { userId: ID; id: ID; name: string }) {
     const db = await getDb();
     return db
       .updateTable("Board")
@@ -114,9 +115,10 @@ export class BoardRepository {
         title: args.name,
       })
       .where("id", "=", args.id)
-      .where("teamId", "=", args.teamId)
       .where((eb) =>
-        eb.exists(UserRepository.userBelongsToTeam(args.userId, args.teamId))
+        eb.exists(
+          UserRepository.userBelongsToTeamRef(eb, args.userId, "Board.teamId")
+        )
       )
       .returningAll()
       .executeTakeFirstOrThrow();

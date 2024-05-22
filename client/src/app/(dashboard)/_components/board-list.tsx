@@ -138,7 +138,6 @@ const BoardDropdown = ({
       />
       <RenameBoardDialog
         board={board}
-        team={team}
         open={openRenameDialog}
         setOpen={setOpenRenameDialog}
       />
