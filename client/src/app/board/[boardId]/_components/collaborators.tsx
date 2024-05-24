@@ -11,7 +11,7 @@ import { UserAwarenessData, isNonNullable } from "@/shared/types";
 import { connect } from "http2";
 import React from "react";
 
-const MAX_SHOWN_COLLABORATORS = 4;
+const MAX_SHOWN_COLLABORATORS = 2;
 
 const Collaborators = ({
   collaborators,
@@ -46,10 +46,18 @@ const Collaborators = ({
             key={user.connectionId}
             label={user.id === userId ? `${user.name} (You)` : user.name}
           >
-            <Avatar>
+            <Avatar
+              className={cn(
+                user.connectionId === connectionId && "border-yellow-400",
+                "border-4"
+              )}
+            >
               <AvatarImage src={user.avatarUrl} />
               <AvatarFallback
-                className={cn(user.avatarColorClassName, "text-white")}
+                className={cn(
+                  user.avatarColorClassName,
+                  "text-white font-semibold text-xs"
+                )}
               >
                 {user.nameInitials.slice(0, 2)}
               </AvatarFallback>
@@ -60,7 +68,7 @@ const Collaborators = ({
       {hiddenCollaboratorsCount > 0 && (
         <SimpleTooltip label={`${hiddenCollaboratorsCount} more collaborators`}>
           <Avatar>
-            <AvatarFallback className="text-white bg-gray-600">
+            <AvatarFallback className="text-white bg-gray-600 font-semibold text-xs">
               {`+${hiddenCollaboratorsCount}`}
             </AvatarFallback>
           </Avatar>

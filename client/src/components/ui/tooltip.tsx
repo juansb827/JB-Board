@@ -27,19 +27,22 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
+type SimpleTooltipProps = {
+  children: React.ReactNode;
+  asChild?: boolean;
+  label: string;
+} & React.ComponentPropsWithoutRef<typeof TooltipContent>;
+
 const SimpleTooltip = ({
   label,
   children,
   asChild = false,
-}: {
-  children: React.ReactNode;
-  asChild?: boolean;
-  label: string;
-}) => {
+  ...props
+}: SimpleTooltipProps) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
-      <TooltipContent>
+      <TooltipContent {...props}>
         <p>{label}</p>
       </TooltipContent>
     </Tooltip>

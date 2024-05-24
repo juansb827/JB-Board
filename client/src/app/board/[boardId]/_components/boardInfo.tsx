@@ -39,13 +39,13 @@ const BoardInfo = ({ boardId }: BoardInfoProps) => {
     }
     return (
       <Button
+        {...props}
         onClick={handleRenameBoard}
-        variant={"ghost"}
+        variant="board"
         className="flex items-center"
         ref={ref}
-        {...props}
       >
-        <span className="text-base text-muted-foreground">{board?.title}</span>
+        {board?.title}
       </Button>
     );
   });
@@ -55,9 +55,9 @@ const BoardInfo = ({ boardId }: BoardInfoProps) => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={"ghost"}
+            variant="board"
             onClick={handleGoToHome}
-            className="flex items-center px-2 py-1 gap-4"
+            className="flex items-center px-2 py-1 gap-4 hover:text-primary"
           >
             <div className="rounded-lg relative h-8 w-16 bg-yellow-300">
               <Image
@@ -67,7 +67,7 @@ const BoardInfo = ({ boardId }: BoardInfoProps) => {
                 className="p-2"
               />
             </div>
-            <span className={cn("font-semibold text-2xl", font.className)}>
+            <span className={cn("font-semibold text-2xl ", font.className)}>
               Boards
             </span>
           </Button>
