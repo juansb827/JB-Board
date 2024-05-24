@@ -32,18 +32,18 @@ const BoardInfo = ({ boardId }: BoardInfoProps) => {
 
   const BoardTitle = forwardRef<HTMLButtonElement, any>(function BoardTitle(
     props,
-    ref: any
+    ref
   ) {
     if (!board) {
       return <Skeleton className="rounded-sm h-full w-36" />;
     }
     return (
       <Button
-        {...props}
         onClick={handleRenameBoard}
         variant={"ghost"}
         className="flex items-center"
         ref={ref}
+        {...props}
       >
         <span className="text-base text-muted-foreground">{board?.title}</span>
       </Button>
