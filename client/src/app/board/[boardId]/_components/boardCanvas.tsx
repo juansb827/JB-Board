@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ToolBar from "./toolbar";
 import Collaborators from "./collaborators";
 import BoardInfo from "./boardInfo";
@@ -11,6 +11,17 @@ import { useUserDashboardInfo } from "@/features/user/user.queries";
 import { Maybe } from "@generated/graphql/graphql";
 import { useDebounceValue } from "usehooks-ts";
 import { type ClassValue, clsx } from "clsx";
+import { getStroke } from "perfect-freehand";
+import { useCanvasStore } from "@/features/board/canvas.store";
+import {
+  ILayer,
+  RectangleLayerType,
+  ToolType,
+} from "@/features/board/board.types";
+import RectangleLayer from "./rectangleLayer";
+import { useStore } from "zustand";
+
+let nextId = 1;
 
 /**
  * Don’t construct class names dynamically
@@ -29,6 +40,39 @@ const avatarColors: string[] = [
   "bg-orange-500",
   "bg-lime-500",
 ];
+const options = {
+  size: 16,
+  thinning: 0,
+  // smoothing: 0.5,
+  // streamline: 0.5,
+  // easing: (t) => t,
+  // start: {
+  //   taper: 0,
+  //   easing: (t) => t,
+  //   cap: true,
+  // },
+  // end: {
+  //   taper: 100,
+  //   easing: (t) => t,
+  //   cap: true,
+  // },
+};
+
+function getSvgPathFromStroke(stroke) {
+  if (!stroke.length) return "";
+
+  const d = stroke.reduce(
+    (acc, [x0, y0], i, arr) => {
+      const [x1, y1] = arr[(i + 1) % arr.length];
+      acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
+      return acc;
+    },
+    ["M", ...stroke[0], "Q"]
+  );
+
+  d.push("Z");
+  return d.join(" ");
+}
 
 interface BoardCanvasProps {
   boardId: string;
@@ -53,6 +97,7 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
   const [currentConnectionId, setCurrentConnectionId] = useState<
     string | undefined
   >(undefined);
+  const activeToolType = useCanvasStore((store) => store.activeToolType);
 
   useEffect(() => {
     // Initialize yjs
@@ -74,7 +119,7 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
       const list: UserAwarenessData[] = Array.from(
         wsAwareness.getStates().values()
       ) as unknown as UserAwarenessData[];
-      console.log("prefilter", list);
+      // console.log("prefilter", list);
       setAwarenessDataList(list.filter((data) => data.user || data.cursor));
     });
 
@@ -86,8 +131,8 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
     roomState.set("slot2", "999");
     roomState.set("slot3", "999");
     roomState.observe((event) => {
-      setRoomState(doc.toJSON());
-      console.log("roomState changed", doc.toJSON());
+      // setRoomState(doc.toJSON());
+      // console.log("roomState changed", doc.toJSON());
     });
     const slot = ["slot1", "slot2", "slot3"].at(Math.floor(Math.random() * 3));
 
@@ -143,21 +188,114 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
 
   // const { data } = useRoom({ boardId: "2" });
 
-  const handleOnMouseMove: React.MouseEventHandler = (e) => {
-    const x = e.clientX;
-    const y = e.clientY;
-    setMousePosition({ x, y });
+  const [layers, setLayers] = useState<ILayer[]>([
+    // {
+    //   width: 100,
+    //   height: 100,
+    //   x: 100,
+    //   y: 100,
+    // },
+    // {
+    //   width: 100,
+    //   height: 100,
+    //   x: 300,
+    //   y: 300,
+    // },
+  ]);
+
+  const setActiveLayer = useCanvasStore((store) => store.setActiveLayer);
+  const activeLayer = useCanvasStore((store) => store.activeLayer);
+  function drawLayer(layer: ILayer) {
+    let Component = null;
+    switch (layer.type) {
+      case "rectangle":
+        Component = RectangleLayer;
+        break;
+      default:
+        Component = RectangleLayer;
+        break;
+    }
+
+    return (
+      <Component
+        key={layer.id}
+        layer={layer as any}
+        // leref={layerRef}
+        onClick={(componentHandle) => {
+          if (activeLayer) {
+            activeLayer.componentHandle.setSelected(false);
+          }
+          setActiveLayer(componentHandle);
+          componentHandle.setSelected(true);
+        }}
+      />
+    );
+  }
+  const handleOnCanvasClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    switch (activeToolType) {
+      case "Selection":
+        return;
+        break;
+      case "Pencil":
+        return;
+        break;
+      case "Square":
+        const newRectangle: RectangleLayerType = {
+          id: String(nextId++),
+          type: "rectangle",
+          attributes: {
+            x: e.clientX,
+            y: e.clientY,
+            width: 100,
+            height: 100,
+          },
+        };
+        setLayers((prevState) => [...prevState, newRectangle]);
+        break;
+      case "Text":
+        break;
+      default:
+        const exhaustiveCheck: never = activeToolType;
+        console.log("Tool Type not handled");
+        break;
+    }
+    // setLayers((prevState) => [
+    //   ...prevState,
+    //   {
+    //     width: 100,
+    //     height: 100,
+    //     x: e.clientX,
+    //     y: e.clientY,
+    //   },
+    // ]);
   };
+
+  const [points, setPoints] = useState<any>([]);
+  const [pointerState, setPointerState] = useState<string>("up");
+  const handleOnMouseMove: React.MouseEventHandler = (e) => {
+    // if (pointerState === "up") {
+    //   return;
+    // }
+    // const x = e.clientX;
+    // const y = e.clientY;
+    // setPoints((prevState) => [...prevState, { x, y }]);
+  };
+  const stroke = getStroke(points, options);
+  const pathData = getSvgPathFromStroke(stroke);
+
+  //console.log(points);
   return (
     <main
-      className="h-full w-full relative bg-neutral-100 touch-none"
-      onMouseMove={handleOnMouseMove}
+      className="h-full w-full relative  touch-none"
+      // onMouseMove={handleOnMouseMove}
+      // onMouseDown={() => setPointerState("down")}
+      // onMouseUp={() => setPointerState("up")}
     >
-      <div className="absolute top-2 left-2 h-12">
+      <div className="absolute top-2 left-2 h-12 z-30">
         {/* {JSON.stringify(roomState, null, 4)} */}
         <BoardInfo boardId={boardId} />
       </div>
-      <div className="absolute top-2 right-2 h-14">
+      <div className="absolute top-2 right-2 h-14 z-30">
         <Collaborators
           collaborators={awarenessDataList
             .map((data) => data.user)
@@ -166,8 +304,20 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
           connectionId={currentConnectionId}
         />
       </div>
-      <div className="absolute left-2 top-[50%] -translate-y-[50%] ">
+      <div className="absolute left-2 top-[50%] -translate-y-[50%] z-30">
         <ToolBar />
+      </div>
+      <div
+        className="absolute top-[0px] left-0px] bg-gray-600 w-[90vw] h-[90vh] z-0"
+        onMouseDown={() => console.log("down")}
+        onMouseUp={() => console.log("up")}
+        onMouseMove={(e) => console.log("move")}
+        onClick={handleOnCanvasClick}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          {layers.map((layer) => drawLayer(layer))}
+          <path d={pathData} /> Sorry, your browser does not support inline SVG.
+        </svg>
       </div>
     </main>
   );
