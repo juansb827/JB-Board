@@ -15,7 +15,7 @@ import { getStroke } from "perfect-freehand";
 import { useCanvasStore } from "@/features/board/canvas.store";
 import {
   ILayer,
-  RectangleLayerType,
+  IRectangleLayer,
   ToolType,
 } from "@/features/board/board.types";
 import RectangleLayer from "./rectangleLayer";
@@ -240,7 +240,7 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         return;
         break;
       case "Square":
-        const newRectangle: RectangleLayerType = {
+        const newRectangle: IRectangleLayer = {
           id: String(nextId++),
           type: "rectangle",
           attributes: {
@@ -248,6 +248,10 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
             y: e.clientY,
             width: 100,
             height: 100,
+            transform: {
+              scaleX: 1,
+              scaleY: 1,
+            },
           },
         };
         setLayers((prevState) => [...prevState, newRectangle]);
@@ -309,9 +313,9 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
       </div>
       <div
         className="absolute top-[0px] left-0px] bg-gray-600 w-[90vw] h-[90vh] z-0"
-        onMouseDown={() => console.log("down")}
-        onMouseUp={() => console.log("up")}
-        onMouseMove={(e) => console.log("move")}
+        // onMouseDown={() => console.log("down")}
+        // onMouseUp={() => console.log("up")}
+        // onMouseMove={(e) => console.log("move")}
         onClick={handleOnCanvasClick}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">

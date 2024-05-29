@@ -22,6 +22,10 @@ export interface IRectangleLayer {
     y: number;
     width: number;
     height: number;
+    transform: {
+      flipX: boolean;
+      flipY: boolean;
+    };
     // color: string;
     // strokeWidth: number;
     // strokeColor: string;
