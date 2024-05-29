@@ -60,7 +60,7 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
   //   []
   // );
 
-  const attributesOnPointerDown = useRef<{
+  const attributesBeforeResize = useRef<{
     clientX: number;
     clientY: number;
     box: BoundingBoxAttributes;
@@ -68,6 +68,13 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
       flipX: boolean;
       flipY: boolean;
     };
+  } | null>(null);
+
+  const attributesBeforeReposition = useRef<{
+    clientX: number;
+    clientY: number;
+    x: number;
+    y: number;
   } | null>(null);
 
   const {
@@ -83,10 +90,10 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
   const translateY = flipY ? -(2 * y + height) : 0;
   const handleOnPointerDown: React.PointerEventHandler = (e) => {
     console.log("Resize Box - onPointerDown");
-    attributesOnPointerDown.current = null;
+    attributesBeforeResize.current = null;
   };
   const handleOnPointerUp: React.PointerEventHandler = (e) => {
-    attributesOnPointerDown.current = null;
+    attributesBeforeResize.current = null;
     console.log("Resize Box - onPointerUp");
   };
   const handleOnPointerMove = (
@@ -95,8 +102,8 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
   ) => {
     if (e.buttons !== 1) return;
     (e.target as SVGCircleElement).setPointerCapture(e.pointerId);
-    if (!attributesOnPointerDown.current) {
-      attributesOnPointerDown.current = {
+    if (!attributesBeforeResize.current) {
+      attributesBeforeResize.current = {
         box: { ...boxAttributes },
         layer: {
           flipX: attributes.transform.flipX,
@@ -113,7 +120,7 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
       layer: { flipX, flipY },
       clientX: initialClientX,
       clientY: initialClientY,
-    } = attributesOnPointerDown.current;
+    } = attributesBeforeResize.current;
     const {
       x: initialBoxX,
       y: initialBoxY,
@@ -242,10 +249,45 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
             height={boxAttributes.height}
             strokeDasharray={"5, 5"}
             strokeWidth={"1"}
-            className="fill-none stroke-black"
+            // "We put fill but make it transparent so we can catch the pointer events"
+            fillOpacity={0}
+            className="fill-white  stroke-black cursor-grab active:cursor-grabbing"
+            onPointerDown={(e) => (attributesBeforeReposition.current = null)}
+            onPointerMove={(e) => {
+              if (e.buttons !== 1) return;
+              (e.target as SVGRectElement).setPointerCapture(e.pointerId);
+              if (!attributesBeforeReposition.current) {
+                attributesBeforeReposition.current = {
+                  clientX: e.clientX,
+                  clientY: e.clientY,
+                  x,
+                  y,
+                };
+              }
+              const {
+                clientX: initialClientX,
+                clientY: initialClientY,
+                x: initialX,
+                y: initialY,
+              } = attributesBeforeReposition.current;
+              const cursorDeltaX = e.clientX - initialClientX;
+              const cursorDeltaY = e.clientY - initialClientY;
+              setAttributes((prevState) => ({
+                ...prevState,
+                x: initialX + cursorDeltaX,
+                y: initialY + cursorDeltaY,
+              }));
+              setBoxAttributes((prevState) => ({
+                ...prevState,
+                x: initialX + cursorDeltaX,
+                y: initialY + cursorDeltaY,
+              }));
+            }}
+            onPointerUp={(e) => (attributesBeforeReposition.current = null)}
           />
           {/* top left */}
           <circle
+            className="cursor-nwse-resize"
             cx={boxAttributes.x}
             cy={boxAttributes.y}
             r={handleRadius}
@@ -255,6 +297,7 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
           />
           {/* top right */}
           <circle
+            className="cursor-nesw-resize "
             cx={boxAttributes.x + boxAttributes.width}
             cy={boxAttributes.y}
             r={handleRadius}
@@ -264,6 +307,7 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
           />
           {/* bottom left */}
           <circle
+            className="cursor-nesw-resize "
             cx={boxAttributes.x}
             cy={boxAttributes.y + boxAttributes.height}
             r={handleRadius}
@@ -272,6 +316,7 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
             onPointerUp={(e) => handleOnPointerUp(e)}
           />
           <circle
+            className="cursor-nwse-resize"
             cx={boxAttributes.x + boxAttributes.width}
             cy={boxAttributes.y + boxAttributes.height}
             r={handleRadius}

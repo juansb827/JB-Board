@@ -9,7 +9,7 @@ export type ToolType = "Selection" | "Pencil" | "Square" | "Text";
 export interface CanvasState {
   activeToolType: ToolType;
   activeLayer?: {
-    componentHandle?: any;
+    // componentHandle?: any;
     layerId: string;
   };
 }

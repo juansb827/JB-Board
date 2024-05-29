@@ -225,15 +225,19 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
           // if (activeLayer) {
           //   activeLayer.componentHandle.setSelected(false);
           // }
-          setActiveLayer(layer.id);
+          setActiveLayer({ layerId: layer.id });
           // componentHandle.setSelected(true);
         }}
       />
     );
   }
-  const handleOnCanvasClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleOnCanvasClick: React.MouseEventHandler<SVGSVGElement> = (e) => {
     switch (activeToolType) {
       case "Selection":
+        const clickedNoElement = e.target === e.currentTarget;
+        if (clickedNoElement) {
+          setActiveLayer(undefined);
+        }
         return;
         break;
       case "Pencil":
@@ -316,9 +320,13 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         // onMouseDown={() => console.log("down")}
         // onMouseUp={() => console.log("up")}
         // onMouseMove={(e) => console.log("move")}
-        onClick={handleOnCanvasClick}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="100%"
+          height="100%"
+          onClick={handleOnCanvasClick}
+        >
           {layers.map((layer) => drawLayer(layer))}
           <path d={pathData} /> Sorry, your browser does not support inline SVG.
         </svg>
