@@ -204,7 +204,7 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
   ]);
 
   const setActiveLayer = useCanvasStore((store) => store.setActiveLayer);
-  const activeLayer = useCanvasStore((store) => store.activeLayer);
+  // const activeLayer = useCanvasStore((store) => store.activeLayer);
   function drawLayer(layer: ILayer) {
     let Component = null;
     switch (layer.type) {
@@ -221,12 +221,12 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         key={layer.id}
         layer={layer as any}
         // leref={layerRef}
-        onClick={(componentHandle) => {
-          if (activeLayer) {
-            activeLayer.componentHandle.setSelected(false);
-          }
-          setActiveLayer(componentHandle);
-          componentHandle.setSelected(true);
+        onClick={() => {
+          // if (activeLayer) {
+          //   activeLayer.componentHandle.setSelected(false);
+          // }
+          setActiveLayer(layer.id);
+          // componentHandle.setSelected(true);
         }}
       />
     );
@@ -249,8 +249,8 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
             width: 100,
             height: 100,
             transform: {
-              scaleX: 1,
-              scaleY: 1,
+              flipX: false,
+              flipY: false,
             },
           },
         };
@@ -312,7 +312,7 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         <ToolBar />
       </div>
       <div
-        className="absolute top-[0px] left-0px] bg-gray-600 w-[90vw] h-[90vh] z-0"
+        className="absolute top-[0px] left-0px] bg-gray-600 w-[100vw] h-[100vh] z-0"
         // onMouseDown={() => console.log("down")}
         // onMouseUp={() => console.log("up")}
         // onMouseMove={(e) => console.log("move")}

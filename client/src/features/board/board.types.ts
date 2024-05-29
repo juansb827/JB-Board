@@ -9,9 +9,16 @@ export type ToolType = "Selection" | "Pencil" | "Square" | "Text";
 export interface CanvasState {
   activeToolType: ToolType;
   activeLayer?: {
-    componentHandle: any;
-    // ref: any;
+    componentHandle?: any;
+    layerId: string;
   };
+}
+
+export interface BoundingBoxAttributes {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 export interface IRectangleLayer {

@@ -1,7 +1,13 @@
-import { IRectangleLayer } from "@/features/board/board.types";
+import {
+  BoundingBoxAttributes,
+  IRectangleLayer,
+} from "@/features/board/board.types";
+import { useCanvasStore } from "@/features/board/canvas.store";
 import { cn } from "@/lib/utils";
 import { at, flip } from "lodash-es";
+import { isAbsolute } from "path";
 import {
+  PointerEvent,
   MutableRefObject,
   useEffect,
   useImperativeHandle,
@@ -12,20 +18,23 @@ import {
 
 interface RectangleLayerProps {
   layer: IRectangleLayer;
-  onClick: (instance: any) => void;
+  onClick: () => void;
   leref?: MutableRefObject<any>;
 }
 const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
   const [attributes, setAttributes] = useState<IRectangleLayer["attributes"]>(
     layer.attributes
   );
-  const [boxAttributes, setBoxAttributes] = useState<any>({
+  const [boxAttributes, setBoxAttributes] = useState<BoundingBoxAttributes>({
     x: 0,
     y: 0,
     width: 0,
     height: 0,
   });
-  const [selected, setSelected] = useState(false);
+  const selected = useCanvasStore(
+    (state) => state.activeLayer?.layerId === layer.id
+  );
+  const showBoundingBox = selected;
 
   const layerRef = useRef<SVGSVGElement | null>(null);
 
@@ -42,24 +51,19 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
     });
   }, []);
 
-  const componentHandle = useRef({});
-  useImperativeHandle(
-    componentHandle,
-    () => ({
-      setSelected: (value: boolean) => setSelected(value),
-    }),
-    []
-  );
+  // const componentHandle = useRef({});
+  // useImperativeHandle(
+  //   componentHandle,
+  //   () => ({
+  //     setSelected: (value: boolean) => setSelected(value),
+  //   }),
+  //   []
+  // );
 
   const attributesOnPointerDown = useRef<{
     clientX: number;
     clientY: number;
-    box: {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    };
+    box: BoundingBoxAttributes;
     layer: {
       flipX: boolean;
       flipY: boolean;
@@ -77,6 +81,116 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
   const scaleY = flipY ? -1 : 1;
   const translateX = flipX ? -(2 * x + width) : 0;
   const translateY = flipY ? -(2 * y + height) : 0;
+  const handleOnPointerDown: React.PointerEventHandler = (e) => {
+    console.log("Resize Box - onPointerDown");
+    attributesOnPointerDown.current = null;
+  };
+  const handleOnPointerUp: React.PointerEventHandler = (e) => {
+    attributesOnPointerDown.current = null;
+    console.log("Resize Box - onPointerUp");
+  };
+  const handleOnPointerMove = (
+    e: PointerEvent<SVGCircleElement>,
+    handlerPosition: "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
+  ) => {
+    if (e.buttons !== 1) return;
+    (e.target as SVGCircleElement).setPointerCapture(e.pointerId);
+    if (!attributesOnPointerDown.current) {
+      attributesOnPointerDown.current = {
+        box: { ...boxAttributes },
+        layer: {
+          flipX: attributes.transform.flipX,
+          flipY: attributes.transform.flipY,
+        },
+        clientX: e.clientX,
+        clientY: e.clientY,
+      };
+    }
+
+    // console.log("r nmove");
+    let {
+      box,
+      layer: { flipX, flipY },
+      clientX: initialClientX,
+      clientY: initialClientY,
+    } = attributesOnPointerDown.current;
+    const {
+      x: initialBoxX,
+      y: initialBoxY,
+      width: initialBoxWidth,
+      height: initialBoxHeight,
+    } = box;
+
+    const cursorDeltaX = e.clientX - initialClientX;
+    const cursorDeltaY = e.clientY - initialClientY;
+
+    let boxWidth: number;
+    let boxHeight: number;
+    let boxX: number;
+    let boxY: number;
+    if (handlerPosition === "bottomLeft") {
+      boxWidth = initialBoxWidth + -cursorDeltaX;
+      boxHeight = initialBoxHeight + cursorDeltaY;
+      boxX =
+        boxWidth >= 0
+          ? initialBoxX + cursorDeltaX
+          : initialBoxX + initialBoxWidth;
+      boxY = boxHeight >= 0 ? initialBoxY : initialBoxY + boxHeight;
+    } else if (handlerPosition === "bottomRight") {
+      boxWidth = initialBoxWidth + cursorDeltaX;
+      boxHeight = initialBoxHeight + cursorDeltaY;
+      boxX = boxWidth >= 0 ? initialBoxX : initialBoxX + boxWidth;
+      boxY = boxHeight >= 0 ? initialBoxY : initialBoxY + boxHeight;
+    } else if (handlerPosition === "topRight") {
+      boxWidth = initialBoxWidth + cursorDeltaX;
+      boxHeight = initialBoxHeight - cursorDeltaY;
+      boxX = boxWidth >= 0 ? initialBoxX : initialBoxX + boxWidth;
+      boxY =
+        boxHeight >= 0
+          ? initialBoxY + cursorDeltaY
+          : initialBoxY + initialBoxHeight;
+    } else if (handlerPosition === "topLeft") {
+      boxWidth = initialBoxWidth - cursorDeltaX;
+      boxHeight = initialBoxHeight - cursorDeltaY;
+      boxX =
+        boxWidth >= 0
+          ? initialBoxX + cursorDeltaX
+          : initialBoxX + initialBoxWidth;
+      boxY =
+        boxHeight >= 0
+          ? initialBoxY + cursorDeltaY
+          : initialBoxY + initialBoxHeight;
+    } else {
+      return;
+    }
+
+    flipX = boxWidth >= 0 ? flipX : !flipX;
+    flipY = boxHeight >= 0 ? flipY : !flipY;
+
+    boxWidth = Math.abs(boxWidth);
+    boxHeight = Math.abs(boxHeight);
+
+    setBoxAttributes({
+      width: boxWidth,
+      height: boxHeight,
+      x: boxX,
+      y: boxY,
+    });
+    setAttributes({
+      width: boxWidth,
+      height: boxHeight,
+      x: boxX,
+      y: boxY,
+      transform: {
+        flipX,
+        flipY,
+        // flipX: false,
+        // flipY: false,
+      },
+    });
+  };
+
+  const handleRadius = "7px";
   return (
     <>
       <svg
@@ -87,6 +201,7 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
         height={height}
         viewBox={`${x} ${y} ${width} ${height}`}
         preserveAspectRatio="none"
+        onClick={() => onClick()}
       >
         <g
           transform={`scale(${scaleX} ${scaleY}) translate(${translateX} ${translateY})`}
@@ -98,7 +213,8 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
             y={y}
             className={cn(
               selected ? "fill-red-300" : "fill-blue-300",
-              "outline-[20px] outline-offset-[-20px] outline-purple-700 outline"
+              "stroke-purple-900 stroke-[20px]"
+              // "outline-[20px] outline-offset-[-20px] outline-purple-700 outline"
             )}
           />
           <line
@@ -117,108 +233,55 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
           />
         </g>
       </svg>
-      <g>
-        <rect
-          x={boxAttributes.x}
-          y={boxAttributes.y}
-          width={boxAttributes.width}
-          height={boxAttributes.height}
-          className="outline-[3px] outline-dashed  fill-none"
-        />
-        {/* top left */}
-        <circle cx={boxAttributes.x} cy={boxAttributes.y} r="10" />
-        {/* bottom left */}
-        <circle
-          cx={boxAttributes.x}
-          cy={boxAttributes.y + boxAttributes.height}
-          r="10"
-        />
-        {/* top right */}
-        <circle
-          cx={boxAttributes.x + boxAttributes.width}
-          cy={boxAttributes.y}
-          r="10"
-        />
-        <circle
-          cx={boxAttributes.x + boxAttributes.width}
-          cy={boxAttributes.y + boxAttributes.height}
-          r="10"
-          onPointerDown={(e: any) => {
-            attributesOnPointerDown.current = null;
-            console.log("r down", e.clientX, e.clientY);
-          }}
-          onPointerMove={(e) => {
-            if (e.buttons !== 1) return;
-            e.target.setPointerCapture(e.pointerId);
-            if (!attributesOnPointerDown.current) {
-              attributesOnPointerDown.current = {
-                box: { ...boxAttributes },
-                layer: {
-                  flipX: attributes.transform.flipX,
-                  flipY: attributes.transform.flipY,
-                },
-                clientX: e.clientX,
-                clientY: e.clientY,
-              };
-            }
-
-            // console.log("r nmove");
-            let {
-              box,
-              layer: { flipX, flipY },
-              clientX: initialClientX,
-              clientY: initialClientY,
-            } = attributesOnPointerDown.current;
-            const {
-              x: initialBoxX,
-              y: initialBoxY,
-              width: initialBoxWidth,
-              height: initialBoxHeight,
-            } = box;
-
-            const cursorDeltaX = e.clientX - initialClientX;
-            const cursorDeltaY = e.clientY - initialClientY;
-            let boxWidth = initialBoxWidth + cursorDeltaX;
-            let boxHeight = initialBoxHeight + cursorDeltaY;
-            const boxX = Math.floor(
-              boxWidth >= 0 ? initialBoxX : initialBoxX + boxWidth
-            );
-            const boxY = Math.floor(
-              boxHeight >= 0 ? initialBoxY : initialBoxY + boxHeight
-            );
-
-            flipX = boxWidth >= 0 ? flipX : !flipX;
-
-            flipY = boxHeight >= 0 ? flipY : !flipY;
-
-            boxWidth = Math.abs(boxWidth);
-            boxHeight = Math.abs(boxHeight);
-
-            setBoxAttributes({
-              width: boxWidth,
-              height: boxHeight,
-              x: boxX,
-              y: boxY,
-            });
-            setAttributes({
-              width: boxWidth,
-              height: boxHeight,
-              x: boxX,
-              y: boxY,
-              transform: {
-                flipX,
-                flipY,
-              },
-            });
-          }}
-          onPointerUp={() => {
-            attributesOnPointerDown.current = null;
-            console.log("r up");
-          }}
-        />
-      </g>
+      {showBoundingBox && (
+        <g>
+          <rect
+            x={boxAttributes.x}
+            y={boxAttributes.y}
+            width={boxAttributes.width}
+            height={boxAttributes.height}
+            strokeDasharray={"5, 5"}
+            strokeWidth={"1"}
+            className="fill-none stroke-black"
+          />
+          {/* top left */}
+          <circle
+            cx={boxAttributes.x}
+            cy={boxAttributes.y}
+            r={handleRadius}
+            onPointerDown={(e) => handleOnPointerDown(e)}
+            onPointerMove={(e) => handleOnPointerMove(e, "topLeft")}
+            onPointerUp={(e) => handleOnPointerUp(e)}
+          />
+          {/* top right */}
+          <circle
+            cx={boxAttributes.x + boxAttributes.width}
+            cy={boxAttributes.y}
+            r={handleRadius}
+            onPointerDown={(e) => handleOnPointerDown(e)}
+            onPointerMove={(e) => handleOnPointerMove(e, "topRight")}
+            onPointerUp={(e) => handleOnPointerUp(e)}
+          />
+          {/* bottom left */}
+          <circle
+            cx={boxAttributes.x}
+            cy={boxAttributes.y + boxAttributes.height}
+            r={handleRadius}
+            onPointerDown={(e) => handleOnPointerDown(e)}
+            onPointerMove={(e) => handleOnPointerMove(e, "bottomLeft")}
+            onPointerUp={(e) => handleOnPointerUp(e)}
+          />
+          <circle
+            cx={boxAttributes.x + boxAttributes.width}
+            cy={boxAttributes.y + boxAttributes.height}
+            r={handleRadius}
+            onPointerDown={(e) => handleOnPointerDown(e)}
+            onPointerMove={(e) => handleOnPointerMove(e, "bottomRight")}
+            onPointerUp={(e) => handleOnPointerUp(e)}
+          />
+        </g>
+      )}
     </>
   );
 };
-
 export default RectangleLayer;
