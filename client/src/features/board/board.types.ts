@@ -21,8 +21,14 @@ export interface BoundingBoxAttributes {
   height: number;
 }
 
-export interface IRectangleLayer {
+interface ILayerBase {
   id: string;
+  orderIndex: number;
+
+  //
+  // changesCount: number;
+}
+export interface IRectangleLayer extends ILayerBase {
   type: "rectangle";
   attributes: {
     x: number;
@@ -39,7 +45,7 @@ export interface IRectangleLayer {
   };
 }
 
-export interface ILineLayer {
+export interface ILineLayer extends ILayerBase {
   id: string;
   type: "line";
   attributes: {

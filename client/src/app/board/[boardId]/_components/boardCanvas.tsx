@@ -134,7 +134,11 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
       Array.from(event.keysChanged).forEach((key) =>
         console.log(key, layersMap.get(key))
       );
-      setLayers(Array.from(layersMap.values()));
+      setLayers(
+        Array.from(layersMap.values()).sort(
+          (a, b) => a.orderIndex - b.orderIndex
+        )
+      );
     });
 
     setAwareness(wsAwareness);
@@ -245,8 +249,12 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         return;
         break;
       case "Square":
+        const doc = docRef.current;
+        if (!doc) return;
+        const layerMap = doc.getMap<ILayer>("layersMap");
         const newRectangle: IRectangleLayer = {
           id: crypto.randomUUID(),
+          orderIndex: layerMap.size,
           type: "rectangle",
           attributes: {
             x: e.clientX,
@@ -259,9 +267,6 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
             },
           },
         };
-        const doc = docRef.current;
-        if (!doc) return;
-        const layerMap = doc.getMap<ILayer>("layersMap");
         layerMap.set(newRectangle.id, newRectangle);
         break;
       case "Text":

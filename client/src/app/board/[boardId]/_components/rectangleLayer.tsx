@@ -58,6 +58,7 @@ const RectangleLayer = ({
   }, []);
 
   useLayoutEffect(() => {
+    console.log("LAYER CHANGED");
     setAttributes(layer.attributes);
   }, [layer]);
 
@@ -76,6 +77,7 @@ const RectangleLayer = ({
       });
     });
   }, [layer]);
+
   // const componentHandle = useRef({});
   // useImperativeHandle(
   //   componentHandle,
@@ -137,6 +139,7 @@ const RectangleLayer = ({
     handlerPosition: "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
   ) => {
     if (e.buttons !== 1) return;
+    console.log("r onPointerMove", handlerPosition);
     (e.target as SVGCircleElement).setPointerCapture(e.pointerId);
     if (!attributesBeforeResize.current) {
       attributesBeforeResize.current = {
@@ -233,7 +236,7 @@ const RectangleLayer = ({
     });
   };
 
-  const handleRadius = "7px";
+  const handleRadius = "8px";
   return (
     <>
       <svg
