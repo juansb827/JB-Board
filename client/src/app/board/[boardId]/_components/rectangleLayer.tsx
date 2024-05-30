@@ -19,9 +19,15 @@ import {
 interface RectangleLayerProps {
   layer: IRectangleLayer;
   onClick: () => void;
+  onCommitChanges: (updatedLayer: IRectangleLayer) => void;
   leref?: MutableRefObject<any>;
 }
-const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
+const RectangleLayer = ({
+  layer,
+  leref,
+  onClick,
+  onCommitChanges,
+}: RectangleLayerProps) => {
   const [attributes, setAttributes] = useState<IRectangleLayer["attributes"]>(
     layer.attributes
   );
@@ -51,6 +57,25 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
     });
   }, []);
 
+  useLayoutEffect(() => {
+    setAttributes(layer.attributes);
+  }, [layer]);
+
+  useEffect(() => {
+    // TODO: unhack this
+    setTimeout(() => {
+      const box = layerRef.current?.getBBox();
+      if (!box) {
+        return;
+      }
+      setBoxAttributes({
+        x: box.x,
+        y: box.y,
+        width: box.width,
+        height: box.height,
+      });
+    });
+  }, [layer]);
   // const componentHandle = useRef({});
   // useImperativeHandle(
   //   componentHandle,
@@ -88,12 +113,23 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
   const scaleY = flipY ? -1 : 1;
   const translateX = flipX ? -(2 * x + width) : 0;
   const translateY = flipY ? -(2 * y + height) : 0;
+
+  const commitChanges = () => {
+    onCommitChanges({
+      ...layer,
+      attributes: {
+        ...layer.attributes,
+        ...attributes,
+      },
+    });
+  };
   const handleOnPointerDown: React.PointerEventHandler = (e) => {
     console.log("Resize Box - onPointerDown");
     attributesBeforeResize.current = null;
   };
   const handleOnPointerUp: React.PointerEventHandler = (e) => {
     attributesBeforeResize.current = null;
+    commitChanges();
     console.log("Resize Box - onPointerUp");
   };
   const handleOnPointerMove = (
@@ -208,7 +244,10 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
         height={height}
         viewBox={`${x} ${y} ${width} ${height}`}
         preserveAspectRatio="none"
-        onClick={() => onClick()}
+        onClick={(e) => {
+          onClick();
+          // console.log("click", e.target.getBBox());
+        }}
       >
         <g
           transform={`scale(${scaleX} ${scaleY}) translate(${translateX} ${translateY})`}
@@ -283,7 +322,10 @@ const RectangleLayer = ({ layer, leref, onClick }: RectangleLayerProps) => {
                 y: initialY + cursorDeltaY,
               }));
             }}
-            onPointerUp={(e) => (attributesBeforeReposition.current = null)}
+            onPointerUp={(e) => {
+              attributesBeforeReposition.current = null;
+              commitChanges();
+            }}
           />
           {/* top left */}
           <circle

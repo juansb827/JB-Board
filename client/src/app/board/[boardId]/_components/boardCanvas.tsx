@@ -21,8 +21,6 @@ import {
 import RectangleLayer from "./rectangleLayer";
 import { useStore } from "zustand";
 
-let nextId = 1;
-
 /**
  * Don’t construct class names dynamically
  * or tailwind compiler wont be able to include them in the build
@@ -79,6 +77,7 @@ interface BoardCanvasProps {
 }
 const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
   const [roomState, setRoomState] = useState({});
+  const docRef = useRef<Y.Doc>();
   const [awareness, setAwareness] = useState<
     WebsocketProvider["awareness"] | null
   >(null);
@@ -101,10 +100,13 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
 
   useEffect(() => {
     // Initialize yjs
-    const doc = new Y.Doc(); // collection of shared objects
+    // collection of shared objects
+    docRef.current = new Y.Doc();
+    const doc = docRef.current;
+    // const doc = new Y.Doc();
     const wsProvider: WebsocketProvider = new WebsocketProvider(
       "ws://localhost:5555",
-      "roomId",
+      "roomId4",
       doc
     );
 
@@ -126,24 +128,19 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
     wsProvider.on("status", (event) => {
       console.log(event.status); // logs "connected" or "disconnected"
     });
-    const roomState = doc.getMap("roomState");
-    roomState.set("slot1", "999");
-    roomState.set("slot2", "999");
-    roomState.set("slot3", "999");
-    roomState.observe((event) => {
-      // setRoomState(doc.toJSON());
-      // console.log("roomState changed", doc.toJSON());
+    const layersMap = doc.getMap<ILayer>("layersMap");
+    layersMap.observe((event) => {
+      console.log("ymap was modified", Array.from(event.keysChanged));
+      Array.from(event.keysChanged).forEach((key) =>
+        console.log(key, layersMap.get(key))
+      );
+      setLayers(Array.from(layersMap.values()));
     });
-    const slot = ["slot1", "slot2", "slot3"].at(Math.floor(Math.random() * 3));
-
-    console.log("Writing to " + slot);
-    const a = setInterval(() => {
-      roomState.set(slot, +Math.random());
-    }, 5000);
 
     setAwareness(wsAwareness);
     return () => {
-      clearInterval(a);
+      wsAwareness.destroy();
+      wsProvider.destroy();
       doc.destroy();
     };
   }, []);
@@ -228,6 +225,10 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
           setActiveLayer({ layerId: layer.id });
           // componentHandle.setSelected(true);
         }}
+        onCommitChanges={(updatedLayer) => {
+          console.log("onCommitChanges", updatedLayer);
+          docRef.current?.getMap("layersMap")?.set(layer.id, updatedLayer);
+        }}
       />
     );
   }
@@ -245,7 +246,7 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         break;
       case "Square":
         const newRectangle: IRectangleLayer = {
-          id: String(nextId++),
+          id: crypto.randomUUID(),
           type: "rectangle",
           attributes: {
             x: e.clientX,
@@ -258,7 +259,10 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
             },
           },
         };
-        setLayers((prevState) => [...prevState, newRectangle]);
+        const doc = docRef.current;
+        if (!doc) return;
+        const layerMap = doc.getMap<ILayer>("layersMap");
+        layerMap.set(newRectangle.id, newRectangle);
         break;
       case "Text":
         break;
@@ -292,6 +296,8 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
   const pathData = getSvgPathFromStroke(stroke);
 
   //console.log(points);
+
+  console.log("Layers", layers);
   return (
     <main
       className="h-full w-full relative  touch-none"
