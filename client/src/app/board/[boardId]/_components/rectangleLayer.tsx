@@ -5,6 +5,7 @@ import {
 import { useCanvasStore } from "@/features/board/canvas.store";
 import { cn } from "@/lib/utils";
 import { at, flip } from "lodash-es";
+import { Squirrel } from "lucide-react";
 import { isAbsolute } from "path";
 import {
   PointerEvent,
@@ -69,13 +70,15 @@ const RectangleLayer = ({
       if (!box) {
         return;
       }
+
       setBoxAttributes({
         x: box.x,
         y: box.y,
         width: box.width,
         height: box.height,
       });
-    });
+      console.log("LAYER BBOX UPDATED");
+    }, 0);
   }, [layer]);
 
   // const componentHandle = useRef({});
@@ -113,8 +116,8 @@ const RectangleLayer = ({
   } = attributes;
   const scaleX = flipX ? -1 : 1;
   const scaleY = flipY ? -1 : 1;
-  const translateX = flipX ? -(2 * x + width) : 0;
-  const translateY = flipY ? -(2 * y + height) : 0;
+  const translateX = flipX ? -width : 0;
+  const translateY = flipY ? -height : 0;
 
   const commitChanges = () => {
     onCommitChanges({
@@ -236,7 +239,7 @@ const RectangleLayer = ({
     });
   };
 
-  const handleRadius = "8px";
+  const handleRadius = "7px";
   return (
     <>
       <svg
@@ -252,35 +255,49 @@ const RectangleLayer = ({
           // console.log("click", e.target.getBBox());
         }}
       >
-        <g
-          transform={`scale(${scaleX} ${scaleY}) translate(${translateX} ${translateY})`}
+        <svg
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          // wrapper to make all children coordinates relative to this container
         >
-          <rect
-            width={width}
-            height={height}
-            x={x}
-            y={y}
-            className={cn(
-              selected ? "fill-red-300" : "fill-blue-300",
-              "stroke-purple-900 stroke-[20px]"
-              // "outline-[20px] outline-offset-[-20px] outline-purple-700 outline"
-            )}
-          />
-          <line
-            x1={x}
-            y1={y}
-            x2={x + width}
-            y2={y + height}
-            className="stroke-blue-900"
-          />
-          <line
-            x1={x + 40}
-            y1={y}
-            x2={x + width}
-            y2={y + height}
-            className="stroke-blue-900"
-          />
-        </g>
+          <g
+            transform={`scale(${scaleX} ${scaleY}) translate(${translateX} ${translateY})`}
+          >
+            <rect
+              width={width}
+              height={height}
+              x={0}
+              y={0}
+              className={cn(
+                selected ? "fill-red-300" : "fill-blue-300",
+                "stroke-purple-900 stroke-[20px]"
+                // "outline-[20px] outline-offset-[-20px] outline-purple-700 outline"
+              )}
+            />
+            <Squirrel
+              x={width / 2 - Math.min(50, width) / 2}
+              y={height / 2 - Math.min(50, height) / 2}
+              width={Math.min(50, width)}
+              height={Math.min(50, height)}
+            />
+            {/* <line
+              x1={0}
+              y1={0}
+              x2={width}
+              y2={height}
+              className="stroke-blue-900"
+            />
+            <line
+              x1={Math.min(10, width)}
+              y1={0}
+              x2={width}
+              y2={height}
+              className="stroke-blue-900"
+            /> */}
+          </g>
+        </svg>
       </svg>
       {showBoundingBox && (
         <g>
