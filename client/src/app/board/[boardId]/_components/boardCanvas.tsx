@@ -20,6 +20,7 @@ import {
 } from "@/features/board/board.types";
 import RectangleLayer from "./rectangleLayer";
 import { useStore } from "zustand";
+import LineLayer from "./lineLayer";
 
 /**
  * Don’t construct class names dynamically
@@ -38,39 +39,6 @@ const avatarColors: string[] = [
   "bg-orange-500",
   "bg-lime-500",
 ];
-const options = {
-  size: 16,
-  thinning: 0,
-  // smoothing: 0.5,
-  // streamline: 0.5,
-  // easing: (t) => t,
-  // start: {
-  //   taper: 0,
-  //   easing: (t) => t,
-  //   cap: true,
-  // },
-  // end: {
-  //   taper: 100,
-  //   easing: (t) => t,
-  //   cap: true,
-  // },
-};
-
-function getSvgPathFromStroke(stroke) {
-  if (!stroke.length) return "";
-
-  const d = stroke.reduce(
-    (acc, [x0, y0], i, arr) => {
-      const [x1, y1] = arr[(i + 1) % arr.length];
-      acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
-      return acc;
-    },
-    ["M", ...stroke[0], "Q"]
-  );
-
-  d.push("Z");
-  return d.join(" ");
-}
 
 interface BoardCanvasProps {
   boardId: string;
@@ -97,6 +65,8 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
     string | undefined
   >(undefined);
   const activeToolType = useCanvasStore((store) => store.activeToolType);
+  const setActiveLayer = useCanvasStore((store) => store.setActiveLayer);
+  const setActiveToolType = useCanvasStore((store) => store.setActiveToolType);
 
   useEffect(() => {
     // Initialize yjs
@@ -204,8 +174,6 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
     // },
   ]);
 
-  const setActiveLayer = useCanvasStore((store) => store.setActiveLayer);
-  // const activeLayer = useCanvasStore((store) => store.activeLayer);
   function drawLayer(layer: ILayer) {
     let Component = null;
     switch (layer.type) {
@@ -257,8 +225,8 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
           orderIndex: layerMap.size,
           type: "rectangle",
           attributes: {
-            x: e.clientX,
-            y: e.clientY,
+            x: e.clientX - 50,
+            y: e.clientY - 50,
             width: 100,
             height: 100,
             transform: {
@@ -268,6 +236,8 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
           },
         };
         layerMap.set(newRectangle.id, newRectangle);
+        setActiveToolType("Selection");
+        setActiveLayer({ layerId: newRectangle.id });
         break;
       case "Text":
         break;
@@ -276,29 +246,18 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         console.log("Tool Type not handled");
         break;
     }
-    // setLayers((prevState) => [
-    //   ...prevState,
-    //   {
-    //     width: 100,
-    //     height: 100,
-    //     x: e.clientX,
-    //     y: e.clientY,
-    //   },
-    // ]);
   };
 
-  const [points, setPoints] = useState<any>([]);
   const [pointerState, setPointerState] = useState<string>("up");
   const handleOnMouseMove: React.MouseEventHandler = (e) => {
     // if (pointerState === "up") {
     //   return;
     // }
+    // console.log("onMouseMove", e.clientX, e.clientY);
     // const x = e.clientX;
     // const y = e.clientY;
     // setPoints((prevState) => [...prevState, { x, y }]);
   };
-  const stroke = getStroke(points, options);
-  const pathData = getSvgPathFromStroke(stroke);
 
   //console.log(points);
 
@@ -306,7 +265,6 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
   return (
     <main
       className="h-full w-full relative  touch-none"
-      // onMouseMove={handleOnMouseMove}
       // onMouseDown={() => setPointerState("down")}
       // onMouseUp={() => setPointerState("up")}
     >
@@ -333,13 +291,15 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         // onMouseMove={(e) => console.log("move")}
       >
         <svg
+          //Canvas
           xmlns="http://www.w3.org/2000/svg"
           width="100%"
           height="100%"
           onClick={handleOnCanvasClick}
+          onPointerMove={handleOnMouseMove}
         >
           {layers.map((layer) => drawLayer(layer))}
-          <path d={pathData} /> Sorry, your browser does not support inline SVG.
+          {activeToolType === "Pencil" && <LineLayer />}
         </svg>
       </div>
     </main>

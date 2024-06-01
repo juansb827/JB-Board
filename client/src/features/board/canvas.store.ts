@@ -8,8 +8,14 @@ const initialState: CanvasState = {
 
 export const useCanvasStore = create(
   combine(initialState, (set) => ({
-    setActiveToolType: (toolType: ToolType) =>
-      set((state) => ({ ...state, activeToolType: toolType })),
+    setActiveToolType: (toolType: ToolType) => {
+      set((state) => ({
+        ...state,
+        activeToolType: toolType,
+        activeLayer: undefined,
+      }));
+    },
+
     setActiveLayer: (layer: { layerId: string } | undefined) =>
       set((state) => ({ ...state, activeLayer: layer })),
   }))

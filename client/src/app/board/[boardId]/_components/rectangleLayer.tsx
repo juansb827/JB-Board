@@ -130,7 +130,16 @@ const RectangleLayer = ({
   };
   const handleOnPointerDown: React.PointerEventHandler = (e) => {
     console.log("Resize Box - onPointerDown");
-    attributesBeforeResize.current = null;
+    (e.target as SVGCircleElement).setPointerCapture(e.pointerId);
+    attributesBeforeResize.current = {
+      box: { ...boxAttributes },
+      layer: {
+        flipX: attributes.transform.flipX,
+        flipY: attributes.transform.flipY,
+      },
+      clientX: e.clientX,
+      clientY: e.clientY,
+    };
   };
   const handleOnPointerUp: React.PointerEventHandler = (e) => {
     attributesBeforeResize.current = null;
@@ -143,17 +152,8 @@ const RectangleLayer = ({
   ) => {
     if (e.buttons !== 1) return;
     console.log("r onPointerMove", handlerPosition);
-    (e.target as SVGCircleElement).setPointerCapture(e.pointerId);
     if (!attributesBeforeResize.current) {
-      attributesBeforeResize.current = {
-        box: { ...boxAttributes },
-        layer: {
-          flipX: attributes.transform.flipX,
-          flipY: attributes.transform.flipY,
-        },
-        clientX: e.clientX,
-        clientY: e.clientY,
-      };
+      return;
     }
 
     // console.log("r nmove");
@@ -311,18 +311,18 @@ const RectangleLayer = ({
             // "We put fill but make it transparent so we can catch the pointer events"
             fillOpacity={0}
             className="fill-white  stroke-black cursor-grab active:cursor-grabbing"
-            onPointerDown={(e) => (attributesBeforeReposition.current = null)}
+            onPointerDown={(e) => {
+              attributesBeforeReposition.current = {
+                clientX: e.clientX,
+                clientY: e.clientY,
+                x,
+                y,
+              };
+              (e.target as SVGRectElement).setPointerCapture(e.pointerId);
+            }}
             onPointerMove={(e) => {
               if (e.buttons !== 1) return;
-              (e.target as SVGRectElement).setPointerCapture(e.pointerId);
-              if (!attributesBeforeReposition.current) {
-                attributesBeforeReposition.current = {
-                  clientX: e.clientX,
-                  clientY: e.clientY,
-                  x,
-                  y,
-                };
-              }
+              if (!attributesBeforeReposition.current) return;
               const {
                 clientX: initialClientX,
                 clientY: initialClientY,
