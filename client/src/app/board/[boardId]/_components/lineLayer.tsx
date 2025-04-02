@@ -1,18 +1,6 @@
+import { ILineLayer } from "@/features/board/board.types";
 import { getStroke } from "perfect-freehand";
 import React, { useState } from "react";
-
-interface LineLayerProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  viewbox: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-}
 
 function getSvgPathFromStroke(stroke) {
   if (!stroke.length) return "";
@@ -47,8 +35,37 @@ const options = {
   //   cap: true,
   // },
 };
-//TODO: Rename to Uncommited Line Layer
-const LineLayer = ({ viewbox, x, y, width, height }: LineLayerProps) => {
+interface LineLayerProps {
+  layer: ILineLayer;
+}
+export const LineLayer = ({ layer }: LineLayerProps) => {
+  const stroke = getStroke(layer.attributes.points, options);
+  const pathData = getSvgPathFromStroke(stroke);
+
+  return <path d={pathData} />;
+};
+
+interface UncommitedLineLayerProps {
+  onCommitChanges: (newLine: Pick<ILineLayer, "attributes">) => void;
+  // x: number;
+  // y: number;
+  // width: number;
+  // height: number;
+  // viewbox: {
+  //   x: number;
+  //   y: number;
+  //   width: number;
+  //   height: number;
+  // };
+}
+const UncommitedLineLayer = ({
+  onCommitChanges,
+  viewbox,
+  x,
+  y,
+  width,
+  height,
+}: UncommitedLineLayerProps) => {
   const [points, setPoints] = useState<any>([]);
   const handleOnPointerDown = (e) => {
     {
@@ -67,10 +84,16 @@ const LineLayer = ({ viewbox, x, y, width, height }: LineLayerProps) => {
   };
 
   const handleOnPointerUp: React.PointerEventHandler<SVGRectElement> = (e) => {
+    onCommitChanges({
+      attributes: {
+        points,
+      },
+    });
     setPoints([]);
   };
   const stroke = getStroke(points, options);
   const pathData = getSvgPathFromStroke(stroke);
+  console.log(points.length, stroke.length);
 
   return (
     <>
@@ -94,4 +117,4 @@ const LineLayer = ({ viewbox, x, y, width, height }: LineLayerProps) => {
   );
 };
 
-export default LineLayer;
+export default UncommitedLineLayer;

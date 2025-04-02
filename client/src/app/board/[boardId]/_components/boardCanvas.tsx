@@ -20,7 +20,7 @@ import {
 } from "@/features/board/board.types";
 import RectangleLayer from "./rectangleLayer";
 import { useStore } from "zustand";
-import LineLayer from "./lineLayer";
+import UncommitedLineLayer, { LineLayer } from "./lineLayer";
 
 /**
  * Don’t construct class names dynamically
@@ -180,8 +180,11 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
       case "rectangle":
         Component = RectangleLayer;
         break;
+      case "line":
+        Component = LineLayer;
+        break;
       default:
-        Component = RectangleLayer;
+        return undefined;
         break;
     }
 
@@ -191,11 +194,10 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         layer={layer as any}
         // leref={layerRef}
         onClick={() => {
-          // if (activeLayer) {
-          //   activeLayer.componentHandle.setSelected(false);
-          // }
+          if (activeToolType !== "Selection") {
+            return;
+          }
           setActiveLayer({ layerId: layer.id });
-          // componentHandle.setSelected(true);
         }}
         onCommitChanges={(updatedLayer) => {
           console.log("onCommitChanges", updatedLayer);
@@ -220,11 +222,17 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
         const doc = docRef.current;
         if (!doc) return;
         const layerMap = doc.getMap<ILayer>("layersMap");
-        const newRectangle: IRectangleLayer = {
-          id: crypto.randomUUID(),
-          orderIndex: layerMap.size,
-          type: "rectangle",
+
+        const newRectangle2 = createNewLayer2(layerMap, {
+          type: "line",
           attributes: {
+            transform: {},
+          },
+        });
+        const newRectangle: IRectangleLayer = createAndPersistNewLayer(
+          layerMap,
+          "rectangle",
+          {
             x: e.clientX - 50,
             y: e.clientY - 50,
             width: 100,
@@ -233,11 +241,10 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
               flipX: false,
               flipY: false,
             },
-          },
-        };
-        layerMap.set(newRectangle.id, newRectangle);
+          }
+        );
         setActiveToolType("Selection");
-        setActiveLayer({ layerId: newRectangle.id });
+        // setActiveLayer({ layerId: newRectangle.id });
         break;
       case "Text":
         break;
@@ -299,7 +306,15 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
           onPointerMove={handleOnMouseMove}
         >
           {layers.map((layer) => drawLayer(layer))}
-          {activeToolType === "Pencil" && <LineLayer />}
+          {activeToolType === "Pencil" && (
+            <UncommitedLineLayer
+              onCommitChanges={(newLine) => {
+                const layerMap = docRef.current?.getMap<ILayer>("layersMap");
+                if (!layerMap) return;
+                createAndPersistNewLayer(layerMap, "line", newLine.attributes);
+              }}
+            />
+          )}
         </svg>
       </div>
     </main>
@@ -307,3 +322,38 @@ const BoardCanvas = ({ boardId }: BoardCanvasProps) => {
 };
 
 export default BoardCanvas;
+function createAndPersistNewLayer<
+  T extends ILayer["type"],
+  U extends Extract<ILayer, { type: T }>
+>(layerMap: Y.Map<ILayer>, type: T, attributes: U["attributes"]) {
+  const baseProps: Omit<ILayer, "type" | "attributes"> = {
+    id: crypto.randomUUID(),
+    orderIndex: layerMap.size,
+  };
+  const newLayer = {
+    ...baseProps,
+    type,
+    attributes,
+  };
+
+  layerMap.set(newLayer.id, newLayer as unknown as ILayer);
+  return newLayer;
+}
+
+function createNewLayer2<T extends Pick<ILayer, "type" | "attributes">>(
+  layerMap: Y.Map<ILayer>,
+  layer: T
+) {
+  const baseProps: Omit<ILayer, "type" | "attributes"> = {
+    id: crypto.randomUUID(),
+    orderIndex: layerMap.size,
+  };
+  const newLayer = {
+    id: crypto.randomUUID(),
+    orderIndex: layerMap.size,
+    ...layer,
+  };
+
+  layerMap.set(newLayer.id, newLayer as unknown as ILayer);
+  return newLayer;
+}

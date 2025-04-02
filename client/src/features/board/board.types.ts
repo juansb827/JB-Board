@@ -49,10 +49,8 @@ export interface ILineLayer extends ILayerBase {
   id: string;
   type: "line";
   attributes: {
-    path: string;
-    // color: string;
-    // strokeWidth: number;
-    // strokeColor: string;
+    points: { x: number; y: number }[];
   };
 }
 export type ILayer = IRectangleLayer | ILineLayer;
+export type ILayerType = ILayer["type"];
